@@ -1,11 +1,7 @@
 source 'https://rubygems.org'
 
-<<<<<<< HEAD
-gem 'rails', '3.2.11'
-gem 'thin'
-=======
 gem "rails", "3.2.13"
->>>>>>> 292cf401008af7502204dc8cdd1e1da19a5f9510
+gem 'thin'
 gem "jquery-rails", "~> 2.0.2"
 gem "coderay", "~> 1.0.9"
 gem "fastercsv", "~> 1.5.0", :platforms => [:mri_18, :mingw_18, :jruby]
@@ -42,32 +38,6 @@ platforms :mri, :mingw do
   end
 end
 
-<<<<<<< HEAD
-# Database gems
-platforms :mri, :mingw do
-  group :postgresql do
-    gem "pg", ">= 0.11.0"
-  end
-
-  group :sqlite do
-    gem "sqlite3"
-  end
-end
-
-platforms :mri_18, :mingw_18 do
-  group :mysql do
-    gem "mysql", "~> 2.8.1"
-  end
-end
-
-platforms :mri_19, :mingw_19 do
-  group :mysql do
-    gem "mysql2", "~> 0.3.11"
-  end
-end
-
-=======
->>>>>>> 292cf401008af7502204dc8cdd1e1da19a5f9510
 platforms :jruby do
   # jruby-openssl is bundled with JRuby 1.7.0
   gem "jruby-openssl" if Object.const_defined?(:JRUBY_VERSION) && JRUBY_VERSION < '1.7.0'
