@@ -111,6 +111,7 @@ class RepositoriesController < ApplicationController
   end
 
   def show
+    import_issues
     @repository.fetch_changesets if Setting.autofetch_changesets? && @path.empty?
 
     @entries = @repository.entries(@path, @rev)
@@ -125,8 +126,7 @@ class RepositoriesController < ApplicationController
       render :action => 'show'
     end
   end
-
-  alias_method :browse, :show
+ alias_method :browse, :show
 
   def changes
     @entry = @repository.entry(@path, @rev)

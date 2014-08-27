@@ -29,6 +29,19 @@ class CalendarsController < ApplicationController
   include SortHelper
 
   def show
+    retrieve_query
+    issues = @query.issues :include => [:status], :conditions => ["issue_statuses.is_default and start_date < ?",Time.now] 
+    issues.each do |issue| 
+      diff = nil
+      if issue.due_date
+        diff = issue.due_date - issue.start_date
+      end
+      issue.start_date = Time.now.to_date 
+      if diff 
+        issue.due_date = issue.start_date + diff
+      end
+      issue.save
+    end
     if params[:year] and params[:year].to_i > 1900
       @year = params[:year].to_i
       if params[:month] and params[:month].to_i > 0 and params[:month].to_i < 13
@@ -39,7 +52,6 @@ class CalendarsController < ApplicationController
     @month ||= Date.today.month
 
     @calendar = Redmine::Helpers::Calendar.new(Date.civil(@year, @month, 1), current_language, :month)
-    retrieve_query
     @query.group_by = nil
     if @query.valid?
       events = []

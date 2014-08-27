@@ -128,6 +128,14 @@ class Repository::Git < Repository
   # The repository can still be fully reloaded by calling #clear_changesets
   # before fetching changesets (eg. for offline resync)
   def fetch_changesets
+    begin
+      p 'fetching git'
+      logger.info 'fetching git'
+      `cd #{self.url} && git fetch -q --all`
+    rescue
+      p 'erro fetching git'
+      logger.info 'erro fetching git'
+    end
     scm_brs = branches
     return if scm_brs.nil? || scm_brs.empty?
 

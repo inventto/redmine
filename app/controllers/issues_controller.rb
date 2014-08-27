@@ -53,6 +53,12 @@ class IssuesController < ApplicationController
   include Redmine::Export::PDF
 
   def index
+   if @project
+    @project.repositories.each do |repository|
+      @repository = repository
+      import_issues
+    end
+   end
     retrieve_query
     sort_init(@query.sort_criteria.empty? ? [['id', 'desc']] : @query.sort_criteria)
     sort_update(@query.sortable_columns)
@@ -139,7 +145,7 @@ class IssuesController < ApplicationController
       respond_to do |format|
         format.html {
           render_attachment_warning_if_needed(@issue)
-          flash[:notice] = l(:notice_issue_successful_create, :id => view_context.link_to("##{@issue.id}", issue_path(@issue), :title => @issue.subject))
+          flash[:notice] = l(:notice_issue_successful_create, :id => view_context.link_to("##{@issue.issue_number ? @issue.issue_number.number : @issue.id}", issue_path(@issue), :title => @issue.subject))
           redirect_to(params[:continue] ?  { :action => 'new', :project_id => @issue.project, :issue => {:tracker_id => @issue.tracker, :parent_issue_id => @issue.parent_issue_id}.reject {|k,v| v.nil?} } :
                       { :action => 'show', :id => @issue })
         }
@@ -311,7 +317,13 @@ private
   def find_issue
     # Issue.visible.find(...) can not be used to redirect user to the login form
     # if the issue actually exists but requires authentication
-    @issue = Issue.find(params[:id], :include => [:project, :tracker, :status, :author, :priority, :category])
+    if params[:issue_number] and params[:repository_id]
+      @issue = Issue.includes([:issue_number, :project, :tracker, :status, :author, :priority, :category]).joins(:issue_number => :repository).find(:first, :conditions => ["issue_numbers.number = ? and repositories.identifier = ?", params[:issue_number], params[:repository_id]])
+    elsif params[:issue_number] and params[:project_id]
+      @issue = Issue.includes([:issue_number, :project, :tracker, :status, :author, :priority, :category]).find(:first, :conditions => ["issue_numbers.number = ? and projects.identifier = ?", params[:issue_number], params[:project_id]])
+    else
+      @issue = Issue.find(params[:id], :include => [:project, :tracker, :status, :author, :priority, :category])
+    end
     unless @issue.visible?
       deny_access
       return
@@ -379,6 +391,7 @@ private
   # TODO: Refactor, lots of extra code in here
   # TODO: Changing tracker on an existing issue should not trigger this
   def build_new_issue_from_params
+    params.delete :repository_id
     if params[:id].blank?
       @issue = Issue.new
       if params[:copy_from]

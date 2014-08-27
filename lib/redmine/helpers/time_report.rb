@@ -18,7 +18,7 @@
 module Redmine
   module Helpers
     class TimeReport
-      attr_reader :criteria, :columns, :from, :to, :hours, :total_hours, :periods
+      attr_reader :criteria, :columns, :from, :to, :hours, :cost, :total_hours, :periods
 
       def initialize(project, issue, criteria, columns, from, to)
         @project = project
@@ -49,6 +49,8 @@ module Redmine
             scope = scope.on_issue(@issue)
           elsif @project
             scope = scope.on_project(@project, Setting.display_subprojects_issues?)
+          else
+            scope = scope.where("not projects.name ilike '%$%'")
           end
           time_columns = %w(tyear tmonth tweek spent_on)
           @hours = []

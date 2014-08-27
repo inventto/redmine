@@ -53,8 +53,14 @@ module Redmine
       end
 
       # Returns events for the given day
-      def events_on(day)
-        ((@ending_events_by_days[day] || []) + (@starting_events_by_days[day] || [])).uniq
+      def events_on(day, project = nil)
+	started = []
+        if project
+          children = project.descendants.visible.all.collect &:id
+          project_ids = [project.id] + children
+          started = Issue.find(:all, :joins => [:status], :conditions => ["project_id in (?) and ((due_date > ? and start_date < ?) or (start_date < current_date and issue_statuses.is_closed = false and (due_date is null or due_date < current_date) and ?))",project_ids, day, day, day.to_time <= Time.now])
+        end
+        ((@ending_events_by_days[day] || []) + (@starting_events_by_days[day] || []) + started).uniq
       end
 
       # Calendar current month

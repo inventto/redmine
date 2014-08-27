@@ -42,8 +42,8 @@ class Issue < ActiveRecord::Base
                      :include => [:project, :journals],
                      # sort by id so that limited eager loading doesn't break with postgresql
                      :order_column => "#{table_name}.id"
-  acts_as_event :title => Proc.new {|o| "#{o.tracker.name} ##{o.id} (#{o.status}): #{o.subject}"},
-                :url => Proc.new {|o| {:controller => 'issues', :action => 'show', :id => o.id}},
+  acts_as_event :title => Proc.new {|o| "#{o.tracker.name} ##{o.issue_number ? o.issue_number.number : o.id} (#{o.status}): #{o.subject}"},
+                :url => Proc.new {|o| {:controller => 'issues', :action => 'show'}.merge(o.issue_number ? {:project_id => o.project_id, :issue_number => o.issue_number.number} : {:id => o.id})},
                 :type => Proc.new {|o| 'issue' + (o.closed? ? ' closed' : '') }
 
   acts_as_activity_provider :find_options => {:include => [:project, :author, :tracker]},
@@ -52,6 +52,7 @@ class Issue < ActiveRecord::Base
   DONE_RATIO_OPTIONS = %w(issue_field issue_status)
 
   attr_reader :current_journal
+  attr_accessor :repository_id
 
   validates_presence_of :subject, :priority, :project, :tracker, :author, :status
 

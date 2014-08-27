@@ -557,4 +557,141 @@ class ApplicationController < ActionController::Base
   def _include_layout?(*args)
     api_request? ? false : super
   end
+
+  def import_issues
+    logger.warn "Importing issues to repository"
+    identifier = @project.identifier
+    project_id = @project.id
+    repository = @repository
+
+    if identifier and identifier.to_s != ""
+      begin
+       logger.warn "https://api.github.com/repos/#{repository.github_repo}/issues?state=closed&per_page=200&access_token=#{Changeset.access_token}"
+        content = open("https://api.github.com/repos/#{repository.github_repo}/issues?state=closed&per_page=200&access_token=#{Changeset.access_token}")
+        response = content.read 
+      rescue Exception => e
+        logger.warn "Error to import issues to repository #{repository.identifier}: #{e.message}"
+      end
+      
+      closed_issues = ActiveSupport::JSON.decode(response)
+      closed_issues ||= []
+
+      logger.warn "Importing Closed #{closed_issues.size}"
+      closed_issues.reverse.each do |closed_issue|
+        issue_number = IssueNumber.joins(:issue).where("number = #{closed_issue["number"]} and project_id = #{project_id} and repository_id=#{@repository.id}")
+        logger.info "ISSUE NUMBER COLOCANDO NUMBER #{issue_number}"
+        if issue_number.empty?
+          begin
+            logger.info "USER #{closed_issue["user"]["login"].downcase}"
+            issue = Issue.new(
+              'subject' => closed_issue["title"],
+              'description' => closed_issue["body"],
+              'created_on' => closed_issue["created_at"],
+              'updated_on' => closed_issue["updated_at"],
+              'start_date' => closed_issue["created_at"],
+              'is_private' => 'f',
+              'tracker_id' => 2, # Tipo = Funcionalidade
+              'project_id' => project_id, # Project Identifier
+              'status_id' => 5, # Status ID, 5 = fechda, 2 = em andamento
+              'priority_id' => 2, #2 = normal
+              'author_id' => (User.find_by_login(closed_issue["user"]["login"].downcase).id rescue 5)
+            );
+            issue.number = closed_issue["number"].to_i
+            issue.origin = "github"
+            issue.repository = @repository
+
+            if !issue.save
+              logger.warn "=====>ERRORS TO SAVING ISSUE: #{issue.errors.full_messages}"
+            end
+          rescue Exception => e
+            logger.warn "=====>RESCUE: ERRORS TO SAVING ISSUE: #{e.message}"
+          end
+        else
+	  issue = Issue.find(issue_number[0].issue_id)
+
+          to_save = false
+          if issue.subject != closed_issue["title"]
+            issue.subject = closed_issue["title"]
+            to_save = true 
+          end
+          if issue.description != closed_issue["body"]
+            issue.description = closed_issue["body"]
+            to_save = true 
+          end
+          if issue.status_id != 5
+            issue.status_id = 5      
+            to_save = true 
+          end
+
+          if to_save and !issue.save
+            logger.warn "=====>ERRORS TO UPDATE ISSUE: #{issue.errors.full_messages}"
+          elsif to_save
+            logger.warn "Issue id #{issue.id} updated!"
+          end
+        end
+      end
+
+      opened_issues = ActiveSupport::JSON.decode(open("https://api.github.com/repos/#{repository.github_repo}/issues?state=opened&per_page=200&access_token=#{Changeset.access_token}").read)
+  
+      opened_issues ||= []
+      logger.warn "Importing Opened #{opened_issues.size}"
+      status_id = IssueStatus.find_by_is_default(true).id # Aguardando is default
+
+      opened_issues.reverse.each do |opened_issue|
+        issue_number = IssueNumber.joins(:issue).where("number = #{opened_issue["number"]} and project_id = #{project_id} and repository_id=#{@repository.id}")
+        if issue_number.empty?
+          begin
+            logger.info "USER #{opened_issue["user"]["login"].downcase}"
+            issue = Issue.new(
+              'subject' => opened_issue["title"],
+              'description' => opened_issue["body"],
+              'created_on' => opened_issue["created_at"],
+              'updated_on' => opened_issue["updated_at"],
+              'start_date' => opened_issue["created_at"],
+              'is_private' => 'f',
+              'tracker_id' => 2, # Tipo = Funcionalidade
+              'project_id' => project_id, # Project Identifier
+              'status_id' => status_id,
+              'done_ratio' => 100, 
+              'priority_id' => 2, #2 = normal
+              'author_id' => (User.find_by_login(opened_issue["user"]["login"].downcase).id rescue 5)
+            );
+            issue.number = opened_issue["number"].to_i
+            issue.origin = "github"
+            issue.repository = @repository
+  
+            if !issue.save
+              logger.warn "=====>ERRORS TO SAVING ISSUE: #{issue.errors.full_messages}"
+            end
+          rescue
+            logger.error "#{$!}\n#{$@.join("\n")}"
+          end
+        else
+	  issue = Issue.find(issue_number[0].issue_id)
+          to_save = false
+          if issue.subject != opened_issue["title"]
+            issue.subject = opened_issue["title"]
+            to_save = true 
+          end
+          if issue.description != opened_issue["body"]
+            issue.description = opened_issue["body"]
+            to_save = true 
+          end
+          if issue.status_id != status_id
+            issue.status_id = status_id
+            to_save = true 
+          end
+          if to_save and !issue.save
+            logger.warn "=====>ERRORS TO UPDATE ISSUE: #{issue.errors.full_messages }"
+          elsif to_save
+            logger.warn "Issue id #{issue.id} updated!" 
+          end
+        end
+      end
+    end
+    rescue
+      logger.error "#{$!}\n#{$@.join("\n")}"
+  end
+
+ 
 end

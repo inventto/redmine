@@ -67,6 +67,7 @@ class TimelogController < ApplicationController
           :offset =>  @entry_pages.current.offset
         )
         @total_hours = scope.sum(:hours).to_f
+        @total_cost = scope.sum(:cost).to_f
 
         render :layout => !request.xhr?
       }
@@ -119,12 +120,16 @@ class TimelogController < ApplicationController
 
   def new
     @time_entry ||= TimeEntry.new(:project => @project, :issue => @issue, :user => User.current, :spent_on => User.current.today)
+    @time_entry.set_last_contract
     @time_entry.safe_attributes = params[:time_entry]
   end
 
   def create
     @time_entry ||= TimeEntry.new(:project => @project, :issue => @issue, :user => User.current, :spent_on => User.current.today)
     @time_entry.safe_attributes = params[:time_entry]
+    if (user_id = params[:time_entry][:user_id].to_i) > 0
+      @time_entry.user = User.find user_id
+    end
 
     call_hook(:controller_timelog_edit_before_save, { :params => params, :time_entry => @time_entry })
 
@@ -162,6 +167,9 @@ class TimelogController < ApplicationController
 
   def update
     @time_entry.safe_attributes = params[:time_entry]
+    if (user_id = params[:time_entry][:user_id].to_i) > 0
+      @time_entry.user = User.find user_id
+    end
 
     call_hook(:controller_timelog_edit_before_save, { :params => params, :time_entry => @time_entry })
 
@@ -264,12 +272,15 @@ private
   end
 
   def find_optional_project_for_new_time_entry
-    if (project_id = (params[:project_id] || params[:time_entry] && params[:time_entry][:project_id])).present?
+    if (project_id = ( params[:time_entry] && params[:time_entry][:project_id] || params[:project_id] )).present?
       @project = Project.find(project_id)
-    end
-    if (issue_id = (params[:issue_id] || params[:time_entry] && params[:time_entry][:issue_id])).present?
-      @issue = Issue.find(issue_id)
-      @project ||= @issue.project
+      if (issue_id = (params[:issue_id] || params[:time_entry] && params[:time_entry][:issue_id])).present?
+        @issue = @project.issues.find_by_id(issue_id)
+	params[:issue_id] = nil if @issue.nil?
+      end
+    elsif (issue_id = (params[:issue_id] || params[:time_entry] && params[:time_entry][:issue_id])).present?
+      @issue = Issue.find_by_number_and_project_id(issue_id, @project.id)
+      #@project ||= @issue.project
     end
   rescue ActiveRecord::RecordNotFound
     render_404
@@ -283,11 +294,15 @@ private
   end
 
   def find_optional_project
-    if !params[:issue_id].blank?
+    if !params[:project_id].blank?
+      @project = Project.find(params[:project_id])
+      if (issue_id = (params[:issue_id] || params[:time_entry] && params[:time_entry][:issue_id])).present?
+        @issue = @project.issues.find_by_id(issue_id)
+	params[:issue_id] = nil if @issue.nil?
+      end
+    elsif !params[:issue_id].blank?
       @issue = Issue.find(params[:issue_id])
       @project = @issue.project
-    elsif !params[:project_id].blank?
-      @project = Project.find(params[:project_id])
     end
   end
 

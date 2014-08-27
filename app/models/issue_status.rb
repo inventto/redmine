@@ -74,7 +74,6 @@ class IssueStatus < ActiveRecord::Base
       conditions = "(author = :false AND assignee = :false)"
       conditions << " OR author = :true" if author
       conditions << " OR assignee = :true" if assignee
-
       workflows.
         includes(:new_status).
         where(["role_id IN (:role_ids) AND tracker_id = :tracker_id AND (#{conditions})",

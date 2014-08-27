@@ -76,9 +76,12 @@ module ApplicationHelper
         subject = truncate(subject, :length => options[:truncate])
       end
     end
-    s = link_to "#{h(issue.tracker)} ##{issue.id}", {:controller => "issues", :action => "show", :id => issue},
-                                                 :class => issue.css_classes,
-                                                 :title => title
+    s = ""
+    if issue.issue_number and issue.issue_number.repository
+      s = link_to "#{h(issue.tracker)} ##{issue.issue_number.number}", issue_number_repository_path(:issue_number => issue.issue_number.number, :repository_id => issue.issue_number.repository.identifier), :class => issue.css_classes, :title => title
+    else
+      s = link_to "#{h(issue.tracker)} ##{issue.issue_number.number}", issue_number_project_path(:issue_number => issue.issue_number.number, :project_id => issue.project.identifier), :class => issue.css_classes, :title => title
+    end
     s << h(": #{subject}") if subject
     s = h("#{issue.project} - ") + s if options[:project]
     s
@@ -717,11 +720,14 @@ module ApplicationHelper
           oid = identifier.to_i
           case prefix
           when nil
-            if oid.to_s == identifier && issue = Issue.visible.find_by_id(oid, :include => :status)
+            if oid.to_s == identifier && issue = Issue.visible.find(:first, :conditions => [ "issue_numbers.number = ? and projects.identifier = ? ", oid, project.identifier], :include => [:status, :issue_number, :project])
               anchor = comment_id ? "note-#{comment_id}" : nil
-              link = link_to("##{oid}", {:only_path => only_path, :controller => 'issues', :action => 'show', :id => oid, :anchor => anchor},
-                                        :class => issue.css_classes,
-                                        :title => "#{truncate(issue.subject, :length => 100)} (#{issue.status.name})")
+              link = ""
+              if issue.issue_number and issue.issue_number.repository
+                link = link_to("##{issue.issue_number.number}", issue_number_repository_path(:issue_number => oid, :repository_id => issue.issue_number.repository.identifier), :class => issue.css_classes, :title => "#{truncate(issue.subject, :length => 100)} (#{issue.status.name})")
+              else
+                link = link_to("##{issue.issue_number.number}", issue_number_project_path(:issue_number => oid, :project_id => project.identifier), :class => issue.css_classes, :title => "#{truncate(issue.subject, :length => 100)} (#{issue.status.name})")
+              end
             end
           when 'document'
             if document = Document.visible.find_by_id(oid)

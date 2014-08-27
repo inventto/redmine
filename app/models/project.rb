@@ -257,9 +257,12 @@ class Project < ActiveRecord::Base
   # Examples:
   #   project.project_condition(true)  => "(projects.id = 1 OR (projects.lft > 1 AND projects.rgt < 10))"
   #   project.project_condition(false) => "projects.id = 1"
-  def project_condition(with_subprojects)
+  def project_condition(with_subprojects, opts = {})
     cond = "#{Project.table_name}.id = #{id}"
     cond = "(#{cond} OR (#{Project.table_name}.lft > #{lft} AND #{Project.table_name}.rgt < #{rgt}))" if with_subprojects
+    if opts[:ignore_name]
+      cond << " and not projects.name ilike '%$%'"
+    end
     cond
   end
 

@@ -20,8 +20,8 @@ class ProjectsController < ApplicationController
   menu_item :roadmap, :only => :roadmap
   menu_item :settings, :only => :settings
 
-  before_filter :find_project, :except => [ :index, :list, :new, :create, :copy ]
-  before_filter :authorize, :except => [ :index, :list, :new, :create, :copy, :archive, :unarchive, :destroy]
+  before_filter :find_project, :except => [ :index, :list, :new, :create, :copy , :on_oauth_callback ]
+  before_filter :authorize, :except => [ :index, :list, :new, :create, :copy, :archive, :unarchive, :destroy, :on_oauth_callback]
   before_filter :authorize_global, :only => [:new, :create]
   before_filter :require_admin, :only => [ :copy, :archive, :unarchive, :destroy ]
   accept_rss_auth :index
@@ -40,12 +40,25 @@ class ProjectsController < ApplicationController
   helper :issues
   helper :queries
   include QueriesHelper
+
   helper :repositories
   include RepositoriesHelper
   include ProjectsHelper
 
+  def on_oauth_callback
+    oauth_code = params["code"]
+    logger.warn "Recebeu o code: #{oauth_code}"
+    res = open("https://github.com/login/oauth/access_token?client_id=0d8bed42837757a68ea7&client_secret=c71991215620eb98b7bf86a524f4a4a61ca1404c&code=#{oauth_code}").read
+    # 8e2609b1cfe2c955ce9d
+    logger.warn res
+    Changeset.access_token = res.gsub(/access_token=/, "").gsub(/&.*/, "")
+    logger.warn "Trocou por access_token: #{Changeset.access_token}"
+    render :nothing
+  end
+
   # Lists visible projects
   def index
+    res = open("https://github.com/login/oauth/authorize?client_id=0d8bed42837757a68ea7&client_secret=c71991215620eb98b7bf86a524f4a4a61ca1404c&scope=repo").read
     respond_to do |format|
       format.html {
         scope = Project

@@ -16,6 +16,12 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 RedmineApp::Application.routes.draw do
+  get "trainees_payments/index"
+
+  get "payment_intern/index"
+
+  get "provisionamentos/index"
+
   root :to => 'welcome#index', :as => 'home'
 
   match 'login', :to => 'account#login', :as => 'signin'
@@ -28,6 +34,9 @@ RedmineApp::Application.routes.draw do
   match '/issues/preview/new/:project_id', :to => 'previews#issue', :as => 'preview_new_issue'
   match '/issues/preview/edit/:id', :to => 'previews#issue', :as => 'preview_edit_issue'
   match '/issues/preview', :to => 'previews#issue', :as => 'preview_issue'
+
+  match 'projects/:project_id/issue/:issue_number', :to => 'issues#show', :via => :get, :as => 'issue_number_project'
+  match 'repositories/:repository_id/issue/:issue_number', :to => 'issues#show', :via => :get, :as => 'issue_number_repository'
 
   match 'projects/:id/wiki', :to => 'wikis#edit', :via => :post
   match 'projects/:id/wiki/destroy', :to => 'wikis#destroy', :via => [:get, :post]
@@ -207,6 +216,7 @@ RedmineApp::Application.routes.draw do
 
   # TODO: port to be part of the resources route(s)
   match 'projects/:id/settings/:tab', :to => 'projects#settings', :via => :get
+  match 'projects/oauth/callback', :controller => 'projects', :action => 'on_oauth_callback'
 
   get 'projects/:id/activity', :to => 'activities#index'
   get 'projects/:id/activity.:format', :to => 'activities#index'

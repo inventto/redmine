@@ -38,7 +38,6 @@ class TimeEntry < ActiveRecord::Base
 
   validates_presence_of :user_id, :activity_id, :project_id, :hours, :spent_on
   validates_numericality_of :hours, :allow_nil => true, :message => :invalid
-  validates_length_of :comments, :maximum => 255, :allow_nil => true
   before_validation :set_project_if_nil
   validate :validate_time_entry
 
@@ -52,7 +51,7 @@ class TimeEntry < ActiveRecord::Base
   }}
   scope :on_project, lambda {|project, include_subprojects| {
     :include => :project,
-    :conditions => project.project_condition(include_subprojects)
+    :conditions => project.project_condition(include_subprojects, (project.name.include?('$') ? {} : {:ignore_name => '$'}))
   }}
   scope :spent_between, lambda {|from, to|
     if from && to
@@ -70,11 +69,15 @@ class TimeEntry < ActiveRecord::Base
 
   def initialize(attributes=nil, *args)
     super
-    if new_record? && self.activity.nil?
-      if default_activity = TimeEntryActivity.default
-        self.activity_id = default_activity.id
+    if new_record?
+      self.user = attributes[:user]
+      self.contract = attributes[:contract]
+      if self.activity.nil?
+        if default_activity = TimeEntryActivity.default
+          self.activity_id = default_activity.id
+        end
       end
-      self.hours = nil if hours == 0
+      #self.hours = nil if hours == 0
     end
   end
 
@@ -83,7 +86,7 @@ class TimeEntry < ActiveRecord::Base
   end
 
   def validate_time_entry
-    errors.add :hours, :invalid if hours && (hours < 0 || hours >= 1000)
+    #errors.add :hours, :invalid if hours && (hours < 0 || hours >= 1000)
     errors.add :project_id, :invalid if project.nil?
     errors.add :issue_id, :invalid if (issue_id && !issue) || (issue && project!=issue.project)
   end

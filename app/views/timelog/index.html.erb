@@ -15,6 +15,9 @@
 <div class="total-hours">
 <p><%= l(:label_total) %>: <%= html_hours(l_hours(@total_hours)) %></p>
 </div>
+<div class="total-cost">
+<p><%= l(:label_cost) %>: <%= @total_cost %></p>
+</div>
 
 <% unless @entries.empty? %>
 <%= render :partial => 'list', :locals => { :entries => @entries }%>

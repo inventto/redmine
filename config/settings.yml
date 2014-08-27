@@ -114,10 +114,10 @@ commit_fix_status_id:
 commit_fix_done_ratio:
   default: 100
 commit_logtime_enabled:
-  default: 0
+  default: 1
 commit_logtime_activity_id:
   format: int
-  default: 0
+  default: 1
 # autologin duration in days
 # 0 means autologin is disabled
 autologin:
@@ -199,7 +199,7 @@ emails_footer:
     You have received this notification because you have either subscribed to it, or are involved in it.
     To change your notification preferences, please click here: http://hostname/my/account
 gravatar_enabled:
-  default: 0
+  default: 1
 openid:
   default: 0
 gravatar_default:
@@ -213,7 +213,7 @@ default_notification_option:
 emails_header:
   default: ''
 thumbnails_enabled:
-  default: 0
+  default: 1
 thumbnails_size:
   format: int
   default: 100

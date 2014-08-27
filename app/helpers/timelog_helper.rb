@@ -55,6 +55,16 @@ module TimelogHelper
     collection
   end
 
+  # Returns a collection of activities for a select field.  time_entry
+  # is optional and will be used to check if the selected TimeEntryActivity
+  # is active.
+  def member_collection_for_select_options(project=nil)
+    project ||= @project
+    collection = []
+    project.members.each { |a| collection << [a.name, a.user_id] }
+    collection
+  end
+
   def select_hours(data, criteria, value)
   	if value.to_s.empty?
   		data.select {|row| row[criteria].blank? }

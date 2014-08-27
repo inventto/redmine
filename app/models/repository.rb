@@ -393,6 +393,19 @@ class Repository < ActiveRecord::Base
     new_record? && project && !Repository.first(:conditions => {:project_id => project.id})
   end
 
+  def github_repo
+	f=File.open "#{url}/config" 
+        s=f.readlines.last
+        logger.warn "parsing #{s}"
+        begin
+	  m=s.match /url = https:\/\/github.com\/(.+)\.git/
+	  m[1]
+        rescue
+	  m=s.match /url = git@github.com:(.+)\.git/
+	  m[1]
+        end
+  end
+
   protected
 
   def check_default
@@ -413,7 +426,6 @@ class Repository < ActiveRecord::Base
       end
     end
   end
-
   private
 
   # Deletes repository data

@@ -72,7 +72,12 @@ module QueriesHelper
     when 'FalseClass'
       l(:general_text_No)
     when 'Issue'
-      link_to_issue(value, :subject => false)
+      title = truncate(value.subject, :length => 60)
+      if value.issue_number and value.issue_number.repository
+        link_to title, issue_number_repository_path(:issue_number => value.issue_number.number, :repository_id => value.issue_number.repository.identifier)
+      else
+        link_to value.issue_number.number, issue_number_project_path(:issue_number => value.issue_number.number, :project_id => value.project.identifier)
+      end
     else
       h(value)
     end
