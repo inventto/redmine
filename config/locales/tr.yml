@@ -56,8 +56,8 @@ tr:
         one: 'yaklaşık 1 saat'
         other: 'yaklaşık %{count} saat'
       x_hours:
-        one:   "1 hour"
-        other: "%{count} hours"
+        one:   "1 saat"
+        other: "%{count} saat"
       x_days:
         one: '1 gün'
         other: '%{count} gün'
@@ -204,8 +204,6 @@ tr:
   mail_subject_account_activation_request: "%{value} hesabı etkinleştirme isteği"
   mail_body_account_activation_request: "Yeni bir kullanıcı (%{value}) kaydedildi. Hesap onaylanmayı bekliyor:"
 
-  gui_validation_error: 1 hata
-  gui_validation_error_plural: "%{count} hata"
 
   field_name: İsim
   field_description: Yorum
@@ -413,8 +411,6 @@ tr:
   label_text: Uzun Metin
   label_attribute: Nitelik
   label_attribute_plural: Nitelikler
-  label_download: "%{count} indirme"
-  label_download_plural: "%{count} indirme"
   label_no_data: Gösterilecek veri yok
   label_change_status: Değişim Durumu
   label_history: Geçmiş
@@ -514,8 +510,6 @@ tr:
   label_repository: Depo
   label_repository_plural: Depolar
   label_browse: Gözat
-  label_modification: "%{count} değişim"
-  label_modification_plural: "%{count} değişim"
   label_revision: Değişiklik
   label_revision_plural: Değişiklikler
   label_associated_revisions: Birleştirilmiş değişiklikler
@@ -778,7 +772,6 @@ tr:
   permission_comment_news: Haberlere yorum yapma
   permission_delete_messages: Mesaj silme
   permission_select_project_modules: Proje modüllerini seçme
-  permission_manage_documents: Belgeleri yönetme
   permission_edit_wiki_pages: Wiki sayfalarını düzenleme
   permission_add_issue_watchers: Takipçi ekleme
   permission_view_gantt: İş-Zaman çizelgesi görme
@@ -939,7 +932,6 @@ tr:
   project_module_gantt: İş-Zaman Çizelgesi
   project_module_calendar: Takvim
   button_edit_associated_wikipage: "Edit associated Wiki page: %{page_title}"
-  text_are_you_sure_with_children: İş, tüm alt işlerle birlikte silinsin mi?
   field_text: Metin alanı
   label_user_mail_option_only_owner: Sadece sahibi olduğum şeyler için
   setting_default_notification_option: Varsayılan bildirim seçeneği
@@ -993,8 +985,6 @@ tr:
   text_scm_command: Komut
   text_scm_command_version: Sürüm
   label_git_report_last_commit: Report last commit for files and directories
-  text_scm_config: You can configure your scm commands in config/configuration.yml. Please restart the application after editing it.
-  text_scm_command_not_available: Scm command is not available. Please check settings on the administration panel.
   notice_issue_successful_create: Issue %{id} created.
   label_between: between
   setting_issue_group_assignment: Allow issue assignment to groups
@@ -1082,3 +1072,37 @@ tr:
   label_attribute_of_assigned_to: Assignee's %{name}
   label_attribute_of_fixed_version: Target version's %{name}
   label_copy_subtasks: Copy subtasks
+  label_copied_to: copied to
+  label_copied_from: copied from
+  label_any_issues_in_project: any issues in project
+  label_any_issues_not_in_project: any issues not in project
+  field_private_notes: Private notes
+  permission_view_private_notes: View private notes
+  permission_set_notes_private: Set notes as private
+  label_no_issues_in_project: no issues in project
+  label_any: Hepsi
+  label_last_n_weeks: last %{count} weeks
+  setting_cross_project_subtasks: Allow cross-project subtasks
+  label_cross_project_descendants: Alt projeler ile
+  label_cross_project_tree: Proje ağacı ile
+  label_cross_project_hierarchy: Proje hiyerarşisi ile
+  label_cross_project_system: Tüm projeler ile
+  button_hide: Hide
+  setting_non_working_week_days: Non-working days
+  label_in_the_next_days: in the next
+  label_in_the_past_days: in the past
+  label_attribute_of_user: User's %{name}
+  text_turning_multiple_off: If you disable multiple values, multiple values will be
+    removed in order to preserve only one value per item.
+  label_attribute_of_issue: Issue's %{name}
+  permission_add_documents: Add documents
+  permission_edit_documents: Edit documents
+  permission_delete_documents: Delete documents
+  label_gantt_progress_line: Progress line
+  setting_jsonp_enabled: Enable JSONP support
+  field_inherit_members: Inherit members
+  field_closed_on: Closed
+  setting_default_projects_tracker_ids: Default trackers for new projects
+  label_total_time: Toplam
+  text_scm_config: You can configure your SCM commands in config/configuration.yml. Please restart the application after editing it.
+  text_scm_command_not_available: SCM command is not available. Please check settings on the administration panel.

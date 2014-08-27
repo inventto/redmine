@@ -46,8 +46,8 @@ lv:
         one:   "aptuveni 1 stunda"
         other: "aptuveni %{count} stundas"
       x_hours:
-        one:   "1 hour"
-        other: "%{count} hours"
+        one:   "1 stunda"
+        other: "%{count} stundas"
       x_days:
         one:   "1 diena"
         other: "%{count} dienas"
@@ -194,8 +194,6 @@ lv:
   mail_subject_wiki_content_updated: "'%{id}' Wiki lapa atjaunota"
   mail_body_wiki_content_updated: "The '%{id}' Wiki lapu atjaunojis %{author}."
 
-  gui_validation_error: 1 kļūda
-  gui_validation_error_plural: "%{count} kļūdas"
 
   field_name: Nosaukums
   field_description: Apraksts
@@ -370,7 +368,6 @@ lv:
   permission_edit_own_time_entries:  Rediģēt savus laika reģistrus
   permission_manage_news: Pārvaldīt jaunumus
   permission_comment_news: Komentēt jaunumus
-  permission_manage_documents: Pārvaldīt dokumentus
   permission_view_documents: Skatīt dokumentus
   permission_manage_files: Pārvaldīt failus
   permission_view_files: Skatīt failus
@@ -491,8 +488,6 @@ lv:
   label_text: Garš teksts
   label_attribute: Atribūts
   label_attribute_plural: Atribūti
-  label_download: "%{count} Lejupielāde"
-  label_download_plural: "%{count} Lejupielādes"
   label_no_data: Nav datu, ko parādīt
   label_change_status: Mainīt statusu
   label_history: Vēsture
@@ -595,8 +590,6 @@ lv:
   label_repository: Repozitorijs
   label_repository_plural: Repozitoriji
   label_browse: Pārlūkot
-  label_modification: "%{count} izmaiņa"
-  label_modification_plural: "%{count} izmaiņas"
   label_branch: Zars
   label_tag: Birka
   label_revision: Revīzija
@@ -782,7 +775,7 @@ lv:
   button_cancel: Atcelt
   button_activate: Aktivizēt
   button_sort: Kārtot
-  button_log_time: Ilgs laiks
+  button_log_time: Reģistrēt laiku
   button_rollback: Atjaunot uz šo versiju
   button_watch: Vērot
   button_unwatch: Nevērot
@@ -914,7 +907,6 @@ lv:
   project_module_gantt: Gantt
   project_module_calendar: Calendar
   button_edit_associated_wikipage: "Edit associated Wiki page: %{page_title}"
-  text_are_you_sure_with_children: Delete issue and all child issues?
   field_text: Text field
   label_user_mail_option_only_owner: Only for things I am the owner of
   setting_default_notification_option: Default notification option
@@ -927,7 +919,6 @@ lv:
   label_principal_search: "Search for user or group:"
   label_user_search: "Search for user:"
   field_visible: Visible
-  setting_emails_header: Emails header
   setting_commit_logtime_activity_id: Activity for logged time
   text_time_logged_by_changeset: Applied in changeset %{value}.
   setting_commit_logtime_enabled: Enable time logging
@@ -968,8 +959,6 @@ lv:
   text_scm_command: Command
   text_scm_command_version: Version
   label_git_report_last_commit: Report last commit for files and directories
-  text_scm_config: You can configure your scm commands in config/configuration.yml. Please restart the application after editing it.
-  text_scm_command_not_available: Scm command is not available. Please check settings on the administration panel.
   notice_issue_successful_create: Issue %{id} created.
   label_between: between
   setting_issue_group_assignment: Allow issue assignment to groups
@@ -1057,3 +1046,38 @@ lv:
   label_attribute_of_assigned_to: Assignee's %{name}
   label_attribute_of_fixed_version: Target version's %{name}
   label_copy_subtasks: Copy subtasks
+  label_copied_to: copied to
+  label_copied_from: copied from
+  label_any_issues_in_project: any issues in project
+  label_any_issues_not_in_project: any issues not in project
+  field_private_notes: Private notes
+  permission_view_private_notes: View private notes
+  permission_set_notes_private: Set notes as private
+  label_no_issues_in_project: no issues in project
+  label_any: visi
+  label_last_n_weeks: last %{count} weeks
+  setting_cross_project_subtasks: Allow cross-project subtasks
+  label_cross_project_descendants: Ar apakšprojektiem
+  label_cross_project_tree: Ar projekta koku
+  label_cross_project_hierarchy: Ar projektu hierarhiju
+  label_cross_project_system: Ar visiem projektiem
+  button_hide: Hide
+  setting_non_working_week_days: Non-working days
+  label_in_the_next_days: in the next
+  label_in_the_past_days: in the past
+  label_attribute_of_user: User's %{name}
+  text_turning_multiple_off: If you disable multiple values, multiple values will be
+    removed in order to preserve only one value per item.
+  label_attribute_of_issue: Issue's %{name}
+  permission_add_documents: Add documents
+  permission_edit_documents: Edit documents
+  permission_delete_documents: Delete documents
+  label_gantt_progress_line: Progress line
+  setting_jsonp_enabled: Enable JSONP support
+  field_inherit_members: Inherit members
+  field_closed_on: Closed
+  setting_default_projects_tracker_ids: Default trackers for new projects
+  label_total_time: Kopā
+  text_scm_config: You can configure your SCM commands in config/configuration.yml. Please restart the application after editing it.
+  text_scm_command_not_available: SCM command is not available. Please check settings on the administration panel.
+  setting_emails_header: Email header

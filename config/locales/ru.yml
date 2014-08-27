@@ -117,8 +117,10 @@ ru:
         many:  "около %{count} часов"
         other: "около %{count} часа"
       x_hours:
-        one:   "1 hour"
-        other: "%{count} hours"
+        one:   "%{count} час"
+        few:   "%{count} часа"
+        many:  "%{count} часов"
+        other: "%{count} часа"
       x_days:
         one:   "%{count} день"
         few:   "%{count} дня"
@@ -145,7 +147,7 @@ ru:
         many:  "больше %{count} лет"
         other: "больше %{count} лет"
       almost_x_years:
-        one:   "почти 1 год"
+        one:   "почти %{count} год"
         few:   "почти %{count} года"
         many:  "почти %{count} лет"
         other: "почти %{count} года"
@@ -399,11 +401,6 @@ ru:
   general_text_yes: 'да'
   general_text_Yes: 'Да'
 
-  gui_validation_error: 1 ошибка
-  gui_validation_error_plural: "%{count} ошибок"
-  gui_validation_error_plural2: "%{count} ошибки"
-  gui_validation_error_plural5: "%{count} ошибок"
-
   label_activity: Действия
   label_add_another_file: Добавить ещё один файл
   label_added_time_by: "Добавил(а) %{author} %{age} назад"
@@ -490,10 +487,6 @@ ru:
   label_document_added: Добавлен документ
   label_document_new: Новый документ
   label_document_plural: Документы
-  label_download: "%{count} загрузка"
-  label_download_plural: "%{count} скачиваний"
-  label_download_plural2: "%{count} загрузки"
-  label_download_plural5: "%{count} загрузок"
   label_downloads_abbr: Скачиваний
   label_duplicated_by: дублируется
   label_duplicates: дублирует
@@ -502,7 +495,7 @@ ru:
   label_enumeration_new: Новое значение
   label_enumerations: Списки значений
   label_environment: Окружение
-  label_equals: является
+  label_equals: соответствует
   label_example: Пример
   label_export_to: Экспортировать в
   label_feed_plural: RSS
@@ -575,10 +568,6 @@ ru:
   label_message_posted: Добавлено сообщение
   label_me: мне
   label_min_max_length: Минимальная - максимальная длина
-  label_modification: "%{count} изменение"
-  label_modification_plural: "%{count} изменений"
-  label_modification_plural2: "%{count} изменения"
-  label_modification_plural5: "%{count} изменений"
   label_modified: изменено
   label_module_plural: Модули
   label_months_from: месяцев(ца) с
@@ -603,7 +592,7 @@ ru:
   label_no_data: Нет данных для отображения
   label_none: отсутствует
   label_not_contains: не содержит
-  label_not_equals: не является
+  label_not_equals: не соответствует
   label_open_issues: открыто
   label_open_issues_plural: открыто
   label_open_issues_plural2: открыто
@@ -824,7 +813,6 @@ ru:
   permission_manage_project_activities: Управление типами действий для проекта
   permission_manage_boards: Управление форумами
   permission_manage_categories: Управление категориями задач
-  permission_manage_documents: Управление документами
   permission_manage_files: Управление файлами
   permission_manage_issue_relations: Управление связыванием задач
   permission_manage_members: Управление участниками
@@ -906,7 +894,6 @@ ru:
   status_locked: заблокирован
   status_registered: зарегистрирован
 
-  text_are_you_sure_with_children: Удалить задачу и все её подзадачи?
   text_are_you_sure: Вы уверены?
   text_assign_time_entries_to_project: Прикрепить зарегистрированное время к проекту
   text_caracters_maximum: "Максимум %{count} символов(а)."
@@ -1093,17 +1080,17 @@ ru:
   label_between: между
   setting_issue_group_assignment: Разрешить назначение задач группам пользователей
   label_diff: Разница(diff)
-  text_git_repository_note: Repository is bare and local (e.g. /gitrepo, c:\gitrepo)
+  text_git_repository_note: Хранилище пустое и локальное (т.е. /gitrepo, c:\gitrepo)
   description_query_sort_criteria_direction: Порядок сортировки
-  description_project_scope: Search scope
+  description_project_scope: Область поиска
   description_filter: Фильтр
-  description_user_mail_notification: Mail notification settings
-  description_date_from: Enter start date
-  description_message_content: Message content
-  description_available_columns: Available Columns
-  description_date_range_interval: Choose range by selecting start and end date
-  description_issue_category_reassign: Choose issue category
-  description_search: Searchfield
+  description_user_mail_notification: Настройки почтовых оповещений
+  description_date_from: Введите дату начала
+  description_message_content: Содержание сообщения
+  description_available_columns: Доступные столбцы
+  description_date_range_interval: Выберите диапазон, установив дату начала и дату окончания
+  description_issue_category_reassign: Выберите категорию задачи
+  description_search: Поле поиска
   description_notes: Примечания
   description_date_range_list: Выберите диапазон из списка
   description_choose_project: Проекты
@@ -1123,11 +1110,10 @@ ru:
   error_attachment_too_big: Этот файл нельзя загрузить из-за превышения максимального размера файла (%{max_size})
   notice_failed_to_save_time_entries: "Невозможно сохранить %{count} затраченное время для %{total} выбранных: %{ids}."
   label_x_issues:
-    zero:  0 Задач
-    one:   1 Задача
-    few:   "%{count} Задач"
-    many:  "%{count} Задач"
-    other: "%{count} Задач"
+    one:   "%{count} задача"
+    few:   "%{count} задачи"
+    many:  "%{count} задач"
+    other: "%{count} Задачи"
   label_repository_new: Новое хранилище
   field_repository_is_default: Хранилище по умолчанию
   label_copy_attachments: Копировать вложения
@@ -1148,7 +1134,11 @@ ru:
   button_delete_my_account: "Удалить мою учетную запись" 
   text_account_destroy_confirmation: "Ваша учетная запись будет полностью удалена без возможности восстановления.\nВы уверены, что хотите продолжить?" 
   error_session_expired: Срок вашей сессии истек. Пожалуйста войдите еще раз
+<<<<<<< HEAD
   text_session_expiration_settings: "Warning: changing these settings may expire the current sessions including yours."
+=======
+  text_session_expiration_settings: "Внимание! Изменение этих настроек может привести к завершению текущих сессий, включая вашу."
+>>>>>>> 292cf401008af7502204dc8cdd1e1da19a5f9510
   setting_session_lifetime: Максимальная продолжительность сессии
   setting_session_timeout: Таймут сессии 
   label_session_expiration: Срок истечения сессии
@@ -1159,7 +1149,11 @@ ru:
   project_status_active: открытые
   project_status_closed: закрытые
   project_status_archived: архивированные
+<<<<<<< HEAD
   text_project_closed: Проект закрыт и находиться в режиме только для чтения.
+=======
+  text_project_closed: Проект закрыт и находится в режиме только для чтения.
+>>>>>>> 292cf401008af7502204dc8cdd1e1da19a5f9510
   notice_user_successful_create: Пользователь %{id} создан.
   field_core_fields: Стандартные поля
   field_timeout: Таймаут (в секундах)
@@ -1176,3 +1170,41 @@ ru:
   label_attribute_of_assigned_to: Назначена %{name}
   label_attribute_of_fixed_version: Версия %{name}
   label_copy_subtasks: Копировать подзадачи
+<<<<<<< HEAD
+=======
+  label_copied_to: скопирована в
+  label_copied_from: скопирована с
+  label_any_issues_in_project: любые задачи в проекте
+  label_any_issues_not_in_project: любые задачи не в проекте
+  field_private_notes: Приватный комментарий
+  permission_view_private_notes: Просмотр приватных комментариев
+  permission_set_notes_private: Размещение приватных комментариев
+  label_no_issues_in_project: нет задач в проекте
+  label_any: все
+  label_last_n_weeks:
+    one:   "последняя %{count} неделя"
+    few:   "последние %{count} недели"
+    many:  "последние %{count} недель"
+    other: "последние %{count} недели"
+  setting_cross_project_subtasks: Разрешить подзадачи в между проектами
+  label_cross_project_descendants: С подпроектами
+  label_cross_project_tree: С деревом проектов
+  label_cross_project_hierarchy: С иерархией проектов
+  label_cross_project_system: Со всеми проектами
+  button_hide: Скрыть
+  setting_non_working_week_days: Нерабочие дни
+  label_in_the_next_days: в средующие дни
+  label_in_the_past_days: в прошлые дни
+  label_attribute_of_user: Пользователь %{name}
+  text_turning_multiple_off: Если отключить множественные значения, лишние значения из списка будут удалены, чтобы осталось только по одному значению.
+  label_attribute_of_issue: Задача %{name}
+  permission_add_documents: Добавить документы
+  permission_edit_documents: Редактировать документы
+  permission_delete_documents: Удалить документы
+  label_gantt_progress_line: Линия прогресса
+  setting_jsonp_enabled: Поддержка JSONP
+  field_inherit_members: Наследовать участников
+  field_closed_on: Закрыта
+  setting_default_projects_tracker_ids: Трекеры по умолчанию для новых проектов
+  label_total_time: Общее время
+>>>>>>> 292cf401008af7502204dc8cdd1e1da19a5f9510

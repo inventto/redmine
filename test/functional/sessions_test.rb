@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,6 +20,8 @@ require File.expand_path('../../test_helper', __FILE__)
 class SessionStartTest < ActionController::TestCase
   tests AccountController
 
+  fixtures :users
+
   def test_login_should_set_session_timestamps
     post :login, :username => 'jsmith', :password => 'jsmith'
     assert_response 302
@@ -31,6 +33,8 @@ end
 
 class SessionsTest < ActionController::TestCase
   tests WelcomeController
+
+  fixtures :users
 
   def test_atime_from_user_session_should_be_updated
     created = 2.hours.ago.utc.to_i

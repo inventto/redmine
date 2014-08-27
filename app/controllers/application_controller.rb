@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -22,7 +22,10 @@ class Unauthorized < Exception; end
 
 class ApplicationController < ActionController::Base
   include Redmine::I18n
-  
+  include Redmine::Pagination
+  include RoutesHelper
+  helper :routes
+
   class_attribute :accept_api_auth_actions
   class_attribute :accept_rss_auth_actions
   class_attribute :model_object
@@ -32,7 +35,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   def handle_unverified_request
     super
-    cookies.delete(:autologin)
+    cookies.delete(autologin_cookie_name)
   end
 
   before_filter :session_expiration, :user_setup, :check_if_login_required, :set_localization
@@ -90,7 +93,7 @@ class ApplicationController < ActionController::Base
   def find_current_user
     user = nil
     unless api_request?
-      if session[:user_id] 
+      if session[:user_id]
         # existing session
         user = (User.active.find(session[:user_id]) rescue nil)
       elsif autologin_user = try_to_autologin
@@ -110,14 +113,28 @@ class ApplicationController < ActionController::Base
           user = User.try_to_login(username, password) || User.find_by_api_key(username)
         end
       end
+      # Switch user if requested by an admin user
+      if user && user.admin? && (username = api_switch_user_from_request)
+        su = User.find_by_login(username)
+        if su && su.active?
+          logger.info("  User switched by: #{user.login} (id=#{user.id})") if logger
+          user = su
+        else
+          render_error :message => 'Invalid X-Redmine-Switch-User header', :status => 412
+        end
+      end
     end
     user
   end
 
+  def autologin_cookie_name
+    Redmine::Configuration['autologin_cookie_name'].presence || 'autologin'
+  end
+
   def try_to_autologin
-    if cookies[:autologin] && Setting.autologin?
+    if cookies[autologin_cookie_name] && Setting.autologin?
       # auto-login feature starts a new session
-      user = User.try_to_autologin(cookies[:autologin])
+      user = User.try_to_autologin(cookies[autologin_cookie_name])
       if user
         reset_session
         start_user_session(user)
@@ -140,7 +157,7 @@ class ApplicationController < ActionController::Base
   # Logs out current user
   def logout_user
     if User.current.logged?
-      cookies.delete :autologin
+      cookies.delete(autologin_cookie_name)
       Token.delete_all(["user_id = ? AND action = ?", User.current.id, 'autologin'])
       self.logged_user = nil
     end
@@ -266,18 +283,38 @@ class ApplicationController < ActionController::Base
     self.model_object = model
   end
 
-  # Filter for bulk issue operations
+  # Find the issue whose id is the :id parameter
+  # Raises a Unauthorized exception if the issue is not visible
+  def find_issue
+    # Issue.visible.find(...) can not be used to redirect user to the login form
+    # if the issue actually exists but requires authentication
+    @issue = Issue.find(params[:id])
+    raise Unauthorized unless @issue.visible?
+    @project = @issue.project
+  rescue ActiveRecord::RecordNotFound
+    render_404
+  end
+
+  # Find issues with a single :id param or :ids array param
+  # Raises a Unauthorized exception if one of the issues is not visible
   def find_issues
     @issues = Issue.find_all_by_id(params[:id] || params[:ids])
     raise ActiveRecord::RecordNotFound if @issues.empty?
-    if @issues.detect {|issue| !issue.visible?}
-      deny_access
-      return
-    end
+    raise Unauthorized unless @issues.all?(&:visible?)
     @projects = @issues.collect(&:project).compact.uniq
     @project = @projects.first if @projects.size == 1
   rescue ActiveRecord::RecordNotFound
     render_404
+  end
+
+  def find_attachments
+    if (attachments = params[:attachments]).present?
+      att = attachments.values.collect do |attachment|
+        Attachment.find_by_token( attachment[:token] ) if attachment[:token].present?
+      end
+      att.compact!
+    end
+    @attachments = att || []
   end
 
   # make sure that the user is a member of the project (or admin) if project is private
@@ -402,7 +439,7 @@ class ApplicationController < ActionController::Base
     @items.sort! {|x,y| y.event_datetime <=> x.event_datetime }
     @items = @items.slice(0, Setting.feeds_limit.to_i)
     @title = options[:title] || Setting.app_title
-    render :template => "common/feed.atom", :layout => false,
+    render :template => "common/feed", :formats => [:atom], :layout => false,
            :content_type => 'application/atom+xml'
   end
 
@@ -508,6 +545,11 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # Returns the API 'switch user' value if present
+  def api_switch_user_from_request
+    request.headers["X-Redmine-Switch-User"].to_s.presence
+  end
+
   # Renders a warning flash if obj has unsaved attachments
   def render_attachment_warning_if_needed(obj)
     flash[:warning] = l(:warning_attachments_not_saved, obj.unsaved_attachments.size) if obj.unsaved_attachments.present?
@@ -538,8 +580,13 @@ class ApplicationController < ActionController::Base
 
   # Renders a 200 response for successfull updates or deletions via the API
   def render_api_ok
-    # head :ok would return a response body with one space
-    render :text => '', :status => :ok, :layout => nil
+    render_api_head :ok
+  end
+
+  # Renders a head API response
+  def render_api_head(status)
+    # #head would return a response body with one space
+    render :text => '', :status => status, :layout => nil
   end
 
   # Renders API response on validation failure

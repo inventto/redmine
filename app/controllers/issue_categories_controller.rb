@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,17 +23,17 @@ class IssueCategoriesController < ApplicationController
   before_filter :find_project_by_project_id, :only => [:index, :new, :create]
   before_filter :authorize
   accept_api_auth :index, :show, :create, :update, :destroy
-  
+
   def index
     respond_to do |format|
-      format.html { redirect_to :controller => 'projects', :action => 'settings', :tab => 'categories', :id => @project }
+      format.html { redirect_to_settings_in_projects }
       format.api { @categories = @project.issue_categories.all }
     end
   end
 
   def show
     respond_to do |format|
-      format.html { redirect_to :controller => 'projects', :action => 'settings', :tab => 'categories', :id => @project }
+      format.html { redirect_to_settings_in_projects }
       format.api
     end
   end
@@ -55,7 +55,7 @@ class IssueCategoriesController < ApplicationController
       respond_to do |format|
         format.html do
           flash[:notice] = l(:notice_successful_create)
-          redirect_to :controller => 'projects', :action => 'settings', :tab => 'categories', :id => @project
+          redirect_to_settings_in_projects
         end
         format.js
         format.api { render :action => 'show', :status => :created, :location => issue_category_path(@category) }
@@ -78,7 +78,7 @@ class IssueCategoriesController < ApplicationController
       respond_to do |format|
         format.html {
           flash[:notice] = l(:notice_successful_update)
-          redirect_to :controller => 'projects', :action => 'settings', :tab => 'categories', :id => @project
+          redirect_to_settings_in_projects
         }
         format.api { render_api_ok }
       end
@@ -92,14 +92,14 @@ class IssueCategoriesController < ApplicationController
 
   def destroy
     @issue_count = @category.issues.size
-    if @issue_count == 0 || params[:todo] || api_request? 
+    if @issue_count == 0 || params[:todo] || api_request?
       reassign_to = nil
       if params[:reassign_to_id] && (params[:todo] == 'reassign' || params[:todo].blank?)
         reassign_to = @project.issue_categories.find_by_id(params[:reassign_to_id])
       end
       @category.destroy(reassign_to)
       respond_to do |format|
-        format.html { redirect_to :controller => 'projects', :action => 'settings', :id => @project, :tab => 'categories' }
+        format.html { redirect_to_settings_in_projects }
         format.api { render_api_ok }
       end
       return
@@ -107,7 +107,12 @@ class IssueCategoriesController < ApplicationController
     @categories = @project.issue_categories - [@category]
   end
 
-private
+  private
+
+  def redirect_to_settings_in_projects
+    redirect_to settings_project_path(@project, :tab => 'categories')
+  end
+
   # Wrap ApplicationController's find_model_object method to set
   # @category instead of just @issue_category
   def find_model_object

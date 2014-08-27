@@ -1,10 +1,13 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
+<<<<<<< HEAD
 gem 'rails', '3.2.11'
 gem 'thin'
+=======
+gem "rails", "3.2.13"
+>>>>>>> 292cf401008af7502204dc8cdd1e1da19a5f9510
 gem "jquery-rails", "~> 2.0.2"
-gem "i18n", "~> 0.6.0"
-gem "coderay", "~> 1.0.6"
+gem "coderay", "~> 1.0.9"
 gem "fastercsv", "~> 1.5.0", :platforms => [:mri_18, :mingw_18, :jruby]
 gem "builder", "3.0.0"
 gem 'thin'
@@ -25,7 +28,7 @@ end
 
 # Optional gem for OpenID authentication
 group :openid do
-  gem "ruby-openid", "~> 2.1.4", :require => "openid"
+  gem "ruby-openid", "~> 2.3.0", :require => "openid"
   gem "rack-openid"
 end
 
@@ -39,6 +42,7 @@ platforms :mri, :mingw do
   end
 end
 
+<<<<<<< HEAD
 # Database gems
 platforms :mri, :mingw do
   group :postgresql do
@@ -62,20 +66,49 @@ platforms :mri_19, :mingw_19 do
   end
 end
 
+=======
+>>>>>>> 292cf401008af7502204dc8cdd1e1da19a5f9510
 platforms :jruby do
-  gem "jruby-openssl"
+  # jruby-openssl is bundled with JRuby 1.7.0
+  gem "jruby-openssl" if Object.const_defined?(:JRUBY_VERSION) && JRUBY_VERSION < '1.7.0'
+  gem "activerecord-jdbc-adapter", "~> 1.2.6"
+end
 
-  group :mysql do
-    gem "activerecord-jdbcmysql-adapter"
+# Include database gems for the adapters found in the database
+# configuration file
+require 'erb'
+require 'yaml'
+database_file = File.join(File.dirname(__FILE__), "config/database.yml")
+if File.exist?(database_file)
+  database_config = YAML::load(ERB.new(IO.read(database_file)).result)
+  adapters = database_config.values.map {|c| c['adapter']}.compact.uniq
+  if adapters.any?
+    adapters.each do |adapter|
+      case adapter
+      when 'mysql2'
+        gem "mysql2", "~> 0.3.11", :platforms => [:mri, :mingw]
+        gem "activerecord-jdbcmysql-adapter", :platforms => :jruby
+      when 'mysql'
+        gem "mysql", "~> 2.8.1", :platforms => [:mri, :mingw]
+        gem "activerecord-jdbcmysql-adapter", :platforms => :jruby
+      when /postgresql/
+        gem "pg", ">= 0.11.0", :platforms => [:mri, :mingw]
+        gem "activerecord-jdbcpostgresql-adapter", :platforms => :jruby
+      when /sqlite3/
+        gem "sqlite3", :platforms => [:mri, :mingw]
+        gem "activerecord-jdbcsqlite3-adapter", :platforms => :jruby
+      when /sqlserver/
+        gem "tiny_tds", "~> 0.5.1", :platforms => [:mri, :mingw]
+        gem "activerecord-sqlserver-adapter", :platforms => [:mri, :mingw]
+      else
+        warn("Unknown database adapter `#{adapter}` found in config/database.yml, use Gemfile.local to load your own database gems")
+      end
+    end
+  else
+    warn("No adapter found in config/database.yml, please configure it first")
   end
-
-  group :postgresql do
-    gem "activerecord-jdbcpostgresql-adapter"
-  end
-
-  group :sqlite do
-    gem "activerecord-jdbcsqlite3-adapter"
-  end
+else
+  warn("Please configure your config/database.yml first")
 end
 
 group :development do
@@ -84,10 +117,11 @@ group :development do
 end
 
 group :test do
-  gem "shoulda", "~> 2.11"
-  # Shoulda does not work nice on Ruby 1.9.3 and seems to need test-unit explicitely.
-  gem "test-unit", :platforms => [:mri_19]
-  gem "mocha", "0.12.3"
+  gem "shoulda", "~> 3.3.2"
+  gem "mocha", "~> 0.13.3"
+  gem 'capybara', '~> 2.0.0'
+  gem 'nokogiri', '< 1.6.0'
+  gem 'selenium-webdriver', '2.35.1'
 end
 
 local_gemfile = File.join(File.dirname(__FILE__), "Gemfile.local")

@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -62,9 +62,9 @@ class Mailer < ActionMailer::Base
     message_id journal
     references issue
     @author = journal.user
-    recipients = issue.recipients
+    recipients = journal.recipients
     # Watchers in cc
-    cc = issue.watcher_recipients - recipients
+    cc = journal.watcher_recipients - recipients
     s = "[#{issue.project.name} - #{issue.tracker.name} ##{issue.id}] "
     s << "(#{issue.status.name}) " if journal.new_value_for('status_id')
     s << issue.subject
@@ -252,7 +252,7 @@ class Mailer < ActionMailer::Base
   #   Mailer.account_activation_request(user).deliver => sends an email to all active administrators
   def account_activation_request(user)
     # Send the email to all active administrators
-    recipients = User.active.find(:all, :conditions => {:admin => true}).collect { |u| u.mail }.compact
+    recipients = User.active.where(:admin => true).all.collect { |u| u.mail }.compact
     @user = user
     @url = url_for(:controller => 'users', :action => 'index',
                          :status => User::STATUS_REGISTERED,
@@ -390,7 +390,7 @@ class Mailer < ActionMailer::Base
 
     # Removes the author from the recipients and cc
     # if he doesn't want to receive notifications about what he does
-    if @author && @author.logged? && @author.pref[:no_self_notified]
+    if @author && @author.logged? && @author.pref.no_self_notified
       headers[:to].delete(@author.mail) if headers[:to].is_a?(Array)
       headers[:cc].delete(@author.mail) if headers[:cc].is_a?(Array)
     end

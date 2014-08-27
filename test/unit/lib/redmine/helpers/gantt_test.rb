@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -26,7 +26,6 @@ class Redmine::Helpers::GanttHelperTest < ActionView::TestCase
            :member_roles,
            :members,
            :enabled_modules,
-           :workflows,
            :versions,
            :groups_users
 
@@ -34,6 +33,7 @@ class Redmine::Helpers::GanttHelperTest < ActionView::TestCase
   include ProjectsHelper
   include IssuesHelper
   include ERB::Util
+  include Rails.application.routes.url_helpers
 
   def setup
     setup_with_controller
@@ -49,7 +49,7 @@ class Redmine::Helpers::GanttHelperTest < ActionView::TestCase
     @project = project
     @gantt = Redmine::Helpers::Gantt.new(options)
     @gantt.project = @project
-    @gantt.query = Query.create!(:project => @project, :name => 'Gantt')
+    @gantt.query = IssueQuery.create!(:project => @project, :name => 'Gantt')
     @gantt.view = self
     @gantt.instance_variable_set('@date_from', options[:date_from] || (today - 14))
     @gantt.instance_variable_set('@date_to', options[:date_to] || (today + 14))
@@ -67,7 +67,7 @@ class Redmine::Helpers::GanttHelperTest < ActionView::TestCase
     should "not exceed max_rows option" do
       p = Project.generate!
       5.times do
-        Issue.generate_for_project!(p)
+        Issue.generate!(:project => p)
       end
       create_gantt(p)
       @gantt.render
@@ -90,14 +90,14 @@ class Redmine::Helpers::GanttHelperTest < ActionView::TestCase
     end
 
     should "count the number of issues without a version" do
-      @project.issues << Issue.generate_for_project!(@project, :fixed_version => nil)
+      @project.issues << Issue.generate!(:project => @project, :fixed_version => nil)
       assert_equal 2, @gantt.number_of_rows_on_project(@project)
     end
 
     should "count the number of issues on versions, including cross-project" do
       version = Version.generate!
       @project.versions << version
-      @project.issues << Issue.generate_for_project!(@project, :fixed_version => version)
+      @project.issues << Issue.generate!(:project => @project, :fixed_version => version)
       assert_equal 3, @gantt.number_of_rows_on_project(@project)
     end
   end

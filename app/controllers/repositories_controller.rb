@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,7 +18,7 @@
 require 'SVG/Graph/Bar'
 require 'SVG/Graph/BarHorizontal'
 require 'digest/sha1'
-require 'redmine/scm/adapters/abstract_adapter'
+require 'redmine/scm/adapters'
 
 class ChangesetNotFound < Exception; end
 class InvalidRevisionParam < Exception; end
@@ -138,13 +138,14 @@ class RepositoriesController < ApplicationController
 
   def revisions
     @changeset_count = @repository.changesets.count
-    @changeset_pages = Paginator.new self, @changeset_count,
+    @changeset_pages = Paginator.new @changeset_count,
                                      per_page_option,
                                      params['page']
-    @changesets = @repository.changesets.find(:all,
-                       :limit  =>  @changeset_pages.items_per_page,
-                       :offset =>  @changeset_pages.current.offset,
-                       :include => [:user, :repository, :parents])
+    @changesets = @repository.changesets.
+      limit(@changeset_pages.per_page).
+      offset(@changeset_pages.offset).
+      includes(:user, :repository, :parents).
+      all
 
     respond_to do |format|
       format.html { render :layout => false if request.xhr? }
@@ -242,7 +243,7 @@ class RepositoriesController < ApplicationController
   # DELETE /projects/:project_id/repository/(:repository_id/)revisions/:rev/issues/:issue_id
   def remove_related_issue
     @issue = Issue.visible.find_by_id(params[:issue_id])
-    if @issue 
+    if @issue
       @changeset.issues.delete(@issue)
     end
   end

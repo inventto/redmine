@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,19 +16,12 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 require File.expand_path('../../test_helper', __FILE__)
-require 'journals_controller'
-
-# Re-raise errors caught by the controller.
-class JournalsController; def rescue_action(e) raise e end; end
 
 class JournalsControllerTest < ActionController::TestCase
   fixtures :projects, :users, :members, :member_roles, :roles, :issues, :journals, :journal_details, :enabled_modules,
     :trackers, :issue_statuses, :enumerations, :custom_fields, :custom_values, :custom_fields_projects
 
   def setup
-    @controller = JournalsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
     User.current = nil
   end
 
@@ -37,6 +30,20 @@ class JournalsControllerTest < ActionController::TestCase
     assert_response :success
     assert_not_nil assigns(:journals)
     assert_equal 'application/atom+xml', @response.content_type
+  end
+
+  def test_index_should_return_privates_notes_with_permission_only
+    journal = Journal.create!(:journalized => Issue.find(2), :notes => 'Privates notes', :private_notes => true, :user_id => 1)
+    @request.session[:user_id] = 2
+
+    get :index, :project_id => 1
+    assert_response :success
+    assert_include journal, assigns(:journals)
+
+    Role.find(1).remove_permission! :view_private_notes
+    get :index, :project_id => 1
+    assert_response :success
+    assert_not_include journal, assigns(:journals)
   end
 
   def test_diff
@@ -76,6 +83,21 @@ class JournalsControllerTest < ActionController::TestCase
     assert_include '> A comment with a private version', response.body
   end
 
+  def test_reply_to_private_note_should_fail_without_permission
+    journal = Journal.create!(:journalized => Issue.find(2), :notes => 'Privates notes', :private_notes => true)
+    @request.session[:user_id] = 2
+
+    xhr :get, :new, :id => 2, :journal_id => journal.id
+    assert_response :success
+    assert_template 'new'
+    assert_equal 'text/javascript', response.content_type
+    assert_include '> Privates notes', response.body
+
+    Role.find(1).remove_permission! :view_private_notes
+    xhr :get, :new, :id => 2, :journal_id => journal.id
+    assert_response 404
+  end
+
   def test_edit_xhr
     @request.session[:user_id] = 1
     xhr :get, :edit, :id => 2
@@ -83,6 +105,22 @@ class JournalsControllerTest < ActionController::TestCase
     assert_template 'edit'
     assert_equal 'text/javascript', response.content_type
     assert_include 'textarea', response.body
+  end
+
+  def test_edit_private_note_should_fail_without_permission
+    journal = Journal.create!(:journalized => Issue.find(2), :notes => 'Privates notes', :private_notes => true)
+    @request.session[:user_id] = 2
+    Role.find(1).add_permission! :edit_issue_notes
+
+    xhr :get, :edit, :id => journal.id
+    assert_response :success
+    assert_template 'edit'
+    assert_equal 'text/javascript', response.content_type
+    assert_include 'textarea', response.body
+
+    Role.find(1).remove_permission! :view_private_notes
+    xhr :get, :edit, :id => journal.id
+    assert_response 404
   end
 
   def test_update_xhr

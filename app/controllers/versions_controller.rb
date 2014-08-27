@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,7 +20,7 @@ class VersionsController < ApplicationController
   model_object Version
   before_filter :find_model_object, :except => [:index, :new, :create, :close_completed]
   before_filter :find_project_from_association, :except => [:index, :new, :create, :close_completed]
-  before_filter :find_project, :only => [:index, :new, :create, :close_completed]
+  before_filter :find_project_by_project_id, :only => [:index, :new, :create, :close_completed]
   before_filter :authorize
 
   accept_api_auth :index, :show, :create, :update, :destroy
@@ -31,7 +31,7 @@ class VersionsController < ApplicationController
   def index
     respond_to do |format|
       format.html {
-        @trackers = @project.trackers.find(:all, :order => 'position')
+        @trackers = @project.trackers.sorted.all
         retrieve_selected_tracker_ids(@trackers, @trackers.select {|t| t.is_in_roadmap?})
         @with_subprojects = params[:with_subprojects].nil? ? Setting.display_subprojects_issues? : (params[:with_subprojects] == '1')
         project_ids = @with_subprojects ? @project.self_and_descendants.collect(&:id) : [@project.id]
@@ -64,9 +64,10 @@ class VersionsController < ApplicationController
   def show
     respond_to do |format|
       format.html {
-        @issues = @version.fixed_issues.visible.find(:all,
-          :include => [:status, :tracker, :priority],
-          :order => "#{Tracker.table_name}.position, #{Issue.table_name}.id")
+        @issues = @version.fixed_issues.visible.
+          includes(:status, :tracker, :priority).
+          reorder("#{Tracker.table_name}.position, #{Issue.table_name}.id").
+          all
       }
       format.api
     end
@@ -95,7 +96,7 @@ class VersionsController < ApplicationController
         respond_to do |format|
           format.html do
             flash[:notice] = l(:notice_successful_create)
-            redirect_back_or_default :controller => 'projects', :action => 'settings', :tab => 'versions', :id => @project
+            redirect_back_or_default settings_project_path(@project, :tab => 'versions')
           end
           format.js
           format.api do
@@ -124,7 +125,7 @@ class VersionsController < ApplicationController
         respond_to do |format|
           format.html {
             flash[:notice] = l(:notice_successful_update)
-            redirect_back_or_default :controller => 'projects', :action => 'settings', :tab => 'versions', :id => @project
+            redirect_back_or_default settings_project_path(@project, :tab => 'versions')
           }
           format.api  { render_api_ok }
         end
@@ -141,21 +142,21 @@ class VersionsController < ApplicationController
     if request.put?
       @project.close_completed_versions
     end
-    redirect_to :controller => 'projects', :action => 'settings', :tab => 'versions', :id => @project
+    redirect_to settings_project_path(@project, :tab => 'versions')
   end
 
   def destroy
     if @version.fixed_issues.empty?
       @version.destroy
       respond_to do |format|
-        format.html { redirect_back_or_default :controller => 'projects', :action => 'settings', :tab => 'versions', :id => @project }
+        format.html { redirect_back_or_default settings_project_path(@project, :tab => 'versions') }
         format.api  { render_api_ok }
       end
     else
       respond_to do |format|
         format.html {
           flash[:error] = l(:notice_unable_delete_version)
-          redirect_to :controller => 'projects', :action => 'settings', :tab => 'versions', :id => @project
+          redirect_to settings_project_path(@project, :tab => 'versions')
         }
         format.api  { head :unprocessable_entity }
       end
@@ -169,12 +170,7 @@ class VersionsController < ApplicationController
     end
   end
 
-private
-  def find_project
-    @project = Project.find(params[:project_id])
-  rescue ActiveRecord::RecordNotFound
-    render_404
-  end
+  private
 
   def retrieve_selected_tracker_ids(selectable_trackers, default_trackers=nil)
     if ids = params[:tracker_ids]
@@ -183,5 +179,4 @@ private
       @selected_tracker_ids = (default_trackers || selectable_trackers).collect {|t| t.id.to_s }
     end
   end
-
 end

@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,8 +15,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-require 'iconv'
-require 'open-uri'
+#require 'iconv'
+#require 'open-uri'
 
 class Changeset < ActiveRecord::Base
   belongs_to :repository
@@ -50,9 +50,9 @@ class Changeset < ActiveRecord::Base
   validates_uniqueness_of :revision, :scope => :repository_id
   validates_uniqueness_of :scmid, :scope => :repository_id, :allow_nil => true
 
-  scope :visible,
-     lambda {|*args| { :include => {:repository => :project},
-                                          :conditions => Project.allowed_to_condition(args.shift || User.current, :view_changesets, *args) } }
+  scope :visible, lambda {|*args|
+    includes(:repository => :project).where(Project.allowed_to_condition(args.shift || User.current, :view_changesets, *args))
+  }
 
   after_create :scan_for_issues
   before_create :before_create_cs
@@ -142,16 +142,16 @@ class Changeset < ActiveRecord::Base
       end
       info[:user] = self.user.login
       comments.scan(/pai?r (com)?[^@]*@(\w+)(.{0,2}@(\w+))?(.{0,2}@(\w+))?/) do |pair|
-        if (par = pair[1]) and par != info[:user] 
+        if (par = pair[1]) and par != info[:user]
           info[:pair1] = par
         end
         if (par = pair[3]) and par != info[:user] and par != pair[1]
           info[:pair2] = par
         end
         if (par = pair[5]) and par != info[:user] and par != pair[1] and par != pair[3]
-          info[:pair3] = par         
+          info[:pair3] = par
         end
-      end 
+      end
 
       import_issue
       info.values.each do |user|
@@ -200,16 +200,16 @@ class Changeset < ActiveRecord::Base
       info[:user] = self.user.login
 
       comments.scan(/pair (com)?[^@]*@(\w+)(.{0,2}@(\w+))?(.{0,2}@(\w+))?/) do |pair|
-        if (par = pair[1]) and par != info[:user] 
+        if (par = pair[1]) and par != info[:user]
           info[:pair1] = par
         end
         if (par = pair[3]) and par != info[:user] and par != pair[1]
           info[:pair2] = par
         end
         if (par = pair[5]) and par != info[:user] and par != pair[1] and par != pair[3]
-          info[:pair3] = par         
+          info[:pair3] = par
         end
-      end 
+      end
 
       issue = nil
       if comments =~ /(#{kw_regexp})+.#(\d+)/
@@ -237,7 +237,7 @@ class Changeset < ActiveRecord::Base
       logger.warn "Sem TimeEntry para: '#{comments}'"
     end
     referenced_issues = referenced_issues.compact
-    self.issues = referenced_issues.uniq if not referenced_issues.empty? 
+    self.issues = referenced_issues.uniq if not referenced_issues.empty?
     self.save
   end
 
@@ -245,7 +245,7 @@ class Changeset < ActiveRecord::Base
     statuses_closed = IssueStatus.where(:is_closed => true).map(&:id)
     # se não está fechada ou não está fechando a issue
     if issue and not statuses_closed.include?(issue.status_id) and not fix_keywords.include?(action)
-      if issue.status_id == 7 # 7 == Aguardando 
+      if issue.status_id == 7 # 7 == Aguardando
         wf = WorkflowTransition.where(:old_status_id => 7).first
         issue.status_id = wf.new_status_id
         issue.save
@@ -253,7 +253,7 @@ class Changeset < ActiveRecord::Base
     end
   end
 
-  def import_issue 
+  def import_issue
     identifier = project.identifier
     project_id = project.id
 
@@ -281,7 +281,7 @@ class Changeset < ActiveRecord::Base
           issue.number = closed_issue["number"].to_i
           issue.origin = "github"
           issue.repository = repository
-  
+
           if !issue.save
             p "=====>ERRORS TO SAVING ISSUE:", issue.errors.full_messages
           end
@@ -291,7 +291,7 @@ class Changeset < ActiveRecord::Base
       end
 
       opened_issues = ActiveSupport::JSON.decode(open("https://api.github.com/repos/#{repository.github_repo}/issues?state=opened&per_page=1000&access_token=#{access_token}").read)
-  
+
       opened_issues.each do |opened_issue|
         if IssueNumber.joins(:issue).where("number = #{opened_issues["number"]} and project_id = #{project_id} and repository_id=#{repository.id}").empty?
          begin
@@ -311,7 +311,7 @@ class Changeset < ActiveRecord::Base
           issue.number = opened_issue["number"].to_i
           issue.origin = "github"
           issue.repository = repository
-  
+
           if !issue.save
             p "=====>ERRORS TO SAVING ISSUE:", issue.errors.full_messages
           end

@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,18 +16,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 require File.expand_path('../../test_helper', __FILE__)
-require 'versions_controller'
-
-# Re-raise errors caught by the controller.
-class VersionsController; def rescue_action(e) raise e end; end
 
 class VersionsControllerTest < ActionController::TestCase
-  fixtures :projects, :versions, :issues, :users, :roles, :members, :member_roles, :enabled_modules, :issue_statuses
+  fixtures :projects, :versions, :issues, :users, :roles, :members, :member_roles, :enabled_modules, :issue_statuses, :issue_categories
 
   def setup
-    @controller = VersionsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
     User.current = nil
   end
 
@@ -101,6 +94,19 @@ class VersionsControllerTest < ActionController::TestCase
     assert_not_nil assigns(:version)
 
     assert_tag :tag => 'h2', :content => /1.0/
+  end
+
+  def test_show_should_display_nil_counts
+    with_settings :default_language => 'en' do
+      get :show, :id => 2, :status_by => 'category'
+      assert_response :success
+      assert_select 'div#status_by' do
+        assert_select 'select[name=status_by]' do
+          assert_select 'option[value=category][selected=selected]'
+        end
+        assert_select 'a', :text => 'none'
+      end
+    end
   end
 
   def test_new

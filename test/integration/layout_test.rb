@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -24,8 +24,7 @@ class LayoutTest < ActionController::IntegrationTest
            :roles,
            :member_roles,
            :members,
-           :enabled_modules,
-           :workflows
+           :enabled_modules
 
   test "browsing to a missing page should render the base layout" do
     get "/users/100000000"
@@ -37,9 +36,9 @@ class LayoutTest < ActionController::IntegrationTest
   end
 
   test "browsing to an unauthorized page should render the base layout" do
-    change_user_password('miscuser9', 'test')
+    change_user_password('miscuser9', 'test1234')
 
-    log_user('miscuser9','test')
+    log_user('miscuser9','test1234')
 
     get "/admin"
     assert_response :forbidden
@@ -85,6 +84,26 @@ class LayoutTest < ActionController::IntegrationTest
     with_settings :default_language => 'en' do
       get '/issues'
       assert_not_include "/javascripts/i18n/jquery.ui.datepicker", response.body
+    end
+
+    with_settings :default_language => 'zh' do
+      get '/issues'
+      assert_include "/javascripts/i18n/jquery.ui.datepicker-zh-CN.js", response.body
+    end
+
+    with_settings :default_language => 'zh-TW' do
+      get '/issues'
+      assert_include "/javascripts/i18n/jquery.ui.datepicker-zh-TW.js", response.body
+    end
+
+    with_settings :default_language => 'pt' do
+      get '/issues'
+      assert_include "/javascripts/i18n/jquery.ui.datepicker-pt.js", response.body
+    end
+
+    with_settings :default_language => 'pt-BR' do
+      get '/issues'
+      assert_include "/javascripts/i18n/jquery.ui.datepicker-pt-BR.js", response.body
     end
   end
 

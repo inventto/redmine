@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -30,15 +30,16 @@ class Version < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name, :scope => [:project_id]
   validates_length_of :name, :maximum => 60
-  validates_format_of :effective_date, :with => /^\d{4}-\d{2}-\d{2}$/, :message => :not_a_date, :allow_nil => true
+  validates :effective_date, :date => true
   validates_inclusion_of :status, :in => VERSION_STATUSES
   validates_inclusion_of :sharing, :in => VERSION_SHARINGS
   validate :validate_version
 
-  scope :named, lambda {|arg| { :conditions => ["LOWER(#{table_name}.name) = LOWER(?)", arg.to_s.strip]}}
-  scope :open, :conditions => {:status => 'open'}
-  scope :visible, lambda {|*args| { :include => :project,
-                                          :conditions => Project.allowed_to_condition(args.first || User.current, :view_issues) } }
+  scope :named, lambda {|arg| where("LOWER(#{table_name}.name) = LOWER(?)", arg.to_s.strip)}
+  scope :open, lambda { where(:status => 'open') }
+  scope :visible, lambda {|*args|
+    includes(:project).where(Project.allowed_to_condition(args.first || User.current, :view_issues))
+  }
 
   safe_attributes 'name', 
     'description',
@@ -47,7 +48,8 @@ class Version < ActiveRecord::Base
     'wiki_page_title',
     'status',
     'sharing',
-    'custom_field_values'
+    'custom_field_values',
+    'custom_fields'
 
   # Returns true if +user+ or current user is allowed to view the version
   def visible?(user=User.current)
@@ -79,7 +81,7 @@ class Version < ActiveRecord::Base
 
   # Returns the total reported time for this version
   def spent_hours
-    @spent_hours ||= TimeEntry.sum(:hours, :joins => :issue, :conditions => ["#{Issue.table_name}.fixed_version_id = ?", id]).to_f
+    @spent_hours ||= TimeEntry.joins(:issue).where("#{Issue.table_name}.fixed_version_id = ?", id).sum(:hours).to_f
   end
 
   def closed?
@@ -92,14 +94,14 @@ class Version < ActiveRecord::Base
 
   # Returns true if the version is completed: due date reached and no open issues
   def completed?
-    effective_date && (effective_date <= Date.today) && (open_issues_count == 0)
+    effective_date && (effective_date < Date.today) && (open_issues_count == 0)
   end
 
   def behind_schedule?
-    if completed_pourcent == 100
+    if completed_percent == 100
       return false
     elsif due_date && start_date
-      done_date = start_date + ((due_date - start_date+1)* completed_pourcent/100).floor
+      done_date = start_date + ((due_date - start_date+1)* completed_percent/100).floor
       return done_date <= Date.today
     else
       false # No issues so it's not late
@@ -108,7 +110,7 @@ class Version < ActiveRecord::Base
 
   # Returns the completion percentage of this version based on the amount of open/closed issues
   # and the time spent on the open issues.
-  def completed_pourcent
+  def completed_percent
     if issues_count == 0
       0
     elsif open_issues_count == 0
@@ -118,13 +120,25 @@ class Version < ActiveRecord::Base
     end
   end
 
+  # TODO: remove in Redmine 3.0
+  def completed_pourcent
+    ActiveSupport::Deprecation.warn "Version#completed_pourcent is deprecated and will be removed in Redmine 3.0. Please use #completed_percent instead."
+    completed_percent
+  end
+
   # Returns the percentage of issues that have been marked as 'closed'.
-  def closed_pourcent
+  def closed_percent
     if issues_count == 0
       0
     else
       issues_progress(false)
     end
+  end
+
+  # TODO: remove in Redmine 3.0
+  def closed_pourcent
+    ActiveSupport::Deprecation.warn "Version#closed_pourcent is deprecated and will be removed in Redmine 3.0. Please use #closed_percent instead."
+    closed_percent
   end
 
   # Returns true if the version is overdue: due date reached and some open issues
@@ -268,9 +282,7 @@ class Version < ActiveRecord::Base
       if issues_count > 0
         ratio = open ? 'done_ratio' : 100
 
-        done = fixed_issues.sum("COALESCE(estimated_hours, #{estimated_average}) * #{ratio}",
-                                  :joins => :status,
-                                  :conditions => ["#{IssueStatus.table_name}.is_closed = ?", !open]).to_f
+        done = fixed_issues.open(open).sum("COALESCE(estimated_hours, #{estimated_average}) * #{ratio}").to_f
         progress = done / (estimated_average * issues_count)
       end
       progress

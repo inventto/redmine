@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -76,6 +76,12 @@ class Redmine::WikiFormatting::MacrosTest < ActionView::TestCase
     assert_equal "<p>Baz: () (NilClass) ()</p>", textilizable("{{baz()}}")
     assert_equal "<p>Baz: () (String) (line1\nline2)</p>", textilizable("{{baz()\nline1\nline2\n}}")
     assert_equal "<p>Baz: (arg1,arg2) (String) (line1\nline2)</p>", textilizable("{{baz(arg1, arg2)\nline1\nline2\n}}")
+  end
+
+  def test_macro_name_with_upper_case
+    Redmine::WikiFormatting::Macros.macro(:UpperCase) {|obj, args| "Upper"}
+
+    assert_equal "<p>Upper</p>", textilizable("{{UpperCase}}")
   end
 
   def test_multiple_macros_on_the_same_line
@@ -199,9 +205,40 @@ class Redmine::WikiFormatting::MacrosTest < ActionView::TestCase
     assert_include 'Page not found', textilizable(text)
   end
 
+  def test_macro_collapse
+    text = "{{collapse\n*Collapsed* block of text\n}}"
+    result = textilizable(text)
+
+    assert_select_in result, 'div.collapsed-text'
+    assert_select_in result, 'strong', :text => 'Collapsed'
+    assert_select_in result, 'a.collapsible.collapsed', :text => 'Show'
+    assert_select_in result, 'a.collapsible', :text => 'Hide'
+  end
+
+  def test_macro_collapse_with_one_arg
+    text = "{{collapse(Example)\n*Collapsed* block of text\n}}"
+    result = textilizable(text)
+
+    assert_select_in result, 'div.collapsed-text'
+    assert_select_in result, 'strong', :text => 'Collapsed'
+    assert_select_in result, 'a.collapsible.collapsed', :text => 'Example'
+    assert_select_in result, 'a.collapsible', :text => 'Example'
+  end
+
+  def test_macro_collapse_with_two_args
+    text = "{{collapse(Show example, Hide example)\n*Collapsed* block of text\n}}"
+    result = textilizable(text)
+
+    assert_select_in result, 'div.collapsed-text'
+    assert_select_in result, 'strong', :text => 'Collapsed'
+    assert_select_in result, 'a.collapsible.collapsed', :text => 'Show example'
+    assert_select_in result, 'a.collapsible', :text => 'Hide example'
+  end
+
   def test_macro_child_pages
     expected =  "<p><ul class=\"pages-hierarchy\">\n" +
-                 "<li><a href=\"/projects/ecookbook/wiki/Child_1\">Child 1</a></li>\n" +
+                 "<li><a href=\"/projects/ecookbook/wiki/Child_1\">Child 1</a>\n" +
+                 "<ul class=\"pages-hierarchy\">\n<li><a href=\"/projects/ecookbook/wiki/Child_1_1\">Child 1 1</a></li>\n</ul>\n</li>\n" +
                  "<li><a href=\"/projects/ecookbook/wiki/Child_2\">Child 2</a></li>\n" +
                  "</ul>\n</p>"
 
@@ -215,11 +252,12 @@ class Redmine::WikiFormatting::MacrosTest < ActionView::TestCase
     assert_equal expected, textilizable("{{child_pages(ecookbook:Another_page)}}", :object => WikiPage.find(1).content)
   end
 
-  def test_macro_child_pages_with_option
+  def test_macro_child_pages_with_parent_option
     expected =  "<p><ul class=\"pages-hierarchy\">\n" +
                  "<li><a href=\"/projects/ecookbook/wiki/Another_page\">Another page</a>\n" +
                  "<ul class=\"pages-hierarchy\">\n" +
-                 "<li><a href=\"/projects/ecookbook/wiki/Child_1\">Child 1</a></li>\n" +
+                 "<li><a href=\"/projects/ecookbook/wiki/Child_1\">Child 1</a>\n" +
+                 "<ul class=\"pages-hierarchy\">\n<li><a href=\"/projects/ecookbook/wiki/Child_1_1\">Child 1 1</a></li>\n</ul>\n</li>\n" +
                  "<li><a href=\"/projects/ecookbook/wiki/Child_2\">Child 2</a></li>\n" +
                  "</ul>\n</li>\n</ul>\n</p>"
 
@@ -231,6 +269,16 @@ class Redmine::WikiFormatting::MacrosTest < ActionView::TestCase
 
     @project = Project.find(2)
     assert_equal expected, textilizable("{{child_pages(ecookbook:Another_page, parent=1)}}", :object => WikiPage.find(1).content)
+  end
+
+  def test_macro_child_pages_with_depth_option
+    expected =  "<p><ul class=\"pages-hierarchy\">\n" +
+                 "<li><a href=\"/projects/ecookbook/wiki/Child_1\">Child 1</a></li>\n" +
+                 "<li><a href=\"/projects/ecookbook/wiki/Child_2\">Child 2</a></li>\n" +
+                 "</ul>\n</p>"
+
+    @project = Project.find(1)
+    assert_equal expected, textilizable("{{child_pages(depth=1)}}", :object => WikiPage.find(2).content)
   end
 
   def test_macro_child_pages_without_wiki_page_should_fail

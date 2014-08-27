@@ -1,7 +1,7 @@
 # encoding: utf-8
 #
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,20 +20,11 @@
 module CustomFieldsHelper
 
   def custom_fields_tabs
-    tabs = [{:name => 'IssueCustomField', :partial => 'custom_fields/index', :label => :label_issue_plural},
-            {:name => 'TimeEntryCustomField', :partial => 'custom_fields/index', :label => :label_spent_time},
-            {:name => 'ProjectCustomField', :partial => 'custom_fields/index', :label => :label_project_plural},
-            {:name => 'VersionCustomField', :partial => 'custom_fields/index', :label => :label_version_plural},
-            {:name => 'UserCustomField', :partial => 'custom_fields/index', :label => :label_user_plural},
-            {:name => 'GroupCustomField', :partial => 'custom_fields/index', :label => :label_group_plural},
-            {:name => 'TimeEntryActivityCustomField', :partial => 'custom_fields/index', :label => TimeEntryActivity::OptionName},
-            {:name => 'IssuePriorityCustomField', :partial => 'custom_fields/index', :label => IssuePriority::OptionName},
-            {:name => 'DocumentCategoryCustomField', :partial => 'custom_fields/index', :label => DocumentCategory::OptionName}
-            ]
+    CustomField::CUSTOM_FIELDS_TABS
   end
 
   # Return custom field html tag corresponding to its format
-  def custom_field_tag(name, custom_value)	
+  def custom_field_tag(name, custom_value)
     custom_field = custom_value.custom_field
     field_name = "#{name}[custom_field_values][#{custom_field.id}]"
     field_name << "[]" if custom_field.multiple?

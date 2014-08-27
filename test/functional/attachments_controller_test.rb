@@ -1,7 +1,7 @@
 # encoding: utf-8
 #
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,10 +18,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 require File.expand_path('../../test_helper', __FILE__)
-require 'attachments_controller'
-
-# Re-raise errors caught by the controller.
-class AttachmentsController; def rescue_action(e) raise e end; end
 
 class AttachmentsControllerTest < ActionController::TestCase
   fixtures :users, :projects, :roles, :members, :member_roles,
@@ -29,9 +25,6 @@ class AttachmentsControllerTest < ActionController::TestCase
            :versions, :wiki_pages, :wikis, :documents
 
   def setup
-    @controller = AttachmentsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
     User.current = nil
     set_fixtures_attachments_directory
   end
@@ -57,7 +50,7 @@ class AttachmentsControllerTest < ActionController::TestCase
     set_tmp_attachments_directory
   end
 
-  def test_show_diff_replcace_cannot_convert_content
+  def test_show_diff_replace_cannot_convert_content
     with_settings :repositories_encodings => 'UTF-8' do
       ['inline', 'sbs'].each do |dt|
         # 060719210727_changeset_iso8859-1.diff
@@ -115,6 +108,21 @@ class AttachmentsControllerTest < ActionController::TestCase
     assert_equal "sbs", user.pref[:diff_type]
   end
 
+  def test_diff_show_filename_in_mercurial_export
+    set_tmp_attachments_directory
+    a = Attachment.new(:container => Issue.find(1),
+                       :file => uploaded_test_file("hg-export.diff", "text/plain"),
+                       :author => User.find(1))
+    assert a.save
+    assert_equal 'hg-export.diff', a.filename
+
+    get :show, :id => a.id, :type => 'inline'
+    assert_response :success
+    assert_template 'diff'
+    assert_equal 'text/html', @response.content_type
+    assert_select 'th.filename', :text => 'test1.txt'
+  end
+
   def test_show_text_file
     get :show, :id => 4
     assert_response :success
@@ -144,7 +152,7 @@ class AttachmentsControllerTest < ActionController::TestCase
                :sibling => { :tag => 'td', :content => /#{str_japanese}/ }
   end
 
-  def test_show_text_file_replcace_cannot_convert_content
+  def test_show_text_file_replace_cannot_convert_content
     set_tmp_attachments_directory
     with_settings :repositories_encodings => 'UTF-8' do
       a = Attachment.new(:container => Issue.find(1),
@@ -215,11 +223,20 @@ class AttachmentsControllerTest < ActionController::TestCase
     set_tmp_attachments_directory
   end
 
-  def test_show_file_without_container_should_be_denied
+  def test_show_file_without_container_should_be_allowed_to_author
     set_tmp_attachments_directory
     attachment = Attachment.create!(:file => uploaded_test_file("testfile.txt", "text/plain"), :author_id => 2)
 
     @request.session[:user_id] = 2
+    get :show, :id => attachment.id
+    assert_response 200
+  end
+
+  def test_show_file_without_container_should_be_denied_to_other_users
+    set_tmp_attachments_directory
+    attachment = Attachment.create!(:file => uploaded_test_file("testfile.txt", "text/plain"), :author_id => 2)
+
+    @request.session[:user_id] = 3
     get :show, :id => attachment.id
     assert_response 403
   end

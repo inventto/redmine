@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,10 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 require File.expand_path('../../test_helper', __FILE__)
-require 'users_controller'
-
-# Re-raise errors caught by the controller.
-class UsersController; def rescue_action(e) raise e end; end
 
 class UsersControllerTest < ActionController::TestCase
   include Redmine::I18n
@@ -29,9 +25,6 @@ class UsersControllerTest < ActionController::TestCase
            :auth_sources
 
   def setup
-    @controller = UsersController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
     User.current = nil
     @request.session[:user_id] = 1 # admin
   end
@@ -173,8 +166,8 @@ class UsersControllerTest < ActionController::TestCase
             :firstname => 'John',
             :lastname => 'Doe',
             :login => 'jdoe',
-            :password => 'secret',
-            :password_confirmation => 'secret',
+            :password => 'secret123',
+            :password_confirmation => 'secret123',
             :mail => 'jdoe@gmail.com',
             :mail_notification => 'none'
           },
@@ -190,7 +183,7 @@ class UsersControllerTest < ActionController::TestCase
     assert_equal 'jdoe', user.login
     assert_equal 'jdoe@gmail.com', user.mail
     assert_equal 'none', user.mail_notification
-    assert user.check_password?('secret')
+    assert user.check_password?('secret123')
 
     mail = ActionMailer::Base.deliveries.last
     assert_not_nil mail
@@ -205,8 +198,8 @@ class UsersControllerTest < ActionController::TestCase
           :firstname => 'John',
           :lastname => 'Doe',
           :login => 'jdoe',
-          :password => 'secret',
-          :password_confirmation => 'secret',
+          :password => 'secret123',
+          :password_confirmation => 'secret123',
           :mail => 'jdoe@gmail.com',
           :mail_notification => 'none'
         },
@@ -287,14 +280,14 @@ class UsersControllerTest < ActionController::TestCase
     ActionMailer::Base.deliveries.clear
     Setting.bcc_recipients = '1'
 
-    put :update, :id => 2, :user => {:password => 'newpass', :password_confirmation => 'newpass'}, :send_information => '1'
+    put :update, :id => 2, :user => {:password => 'newpass123', :password_confirmation => 'newpass123'}, :send_information => '1'
     u = User.find(2)
-    assert u.check_password?('newpass')
+    assert u.check_password?('newpass123')
 
     mail = ActionMailer::Base.deliveries.last
     assert_not_nil mail
     assert_equal [u.mail], mail.bcc
-    assert_mail_body_match 'newpass', mail
+    assert_mail_body_match 'newpass123', mail
   end
 
   def test_update_user_switchin_from_auth_source_to_password_authentication
@@ -303,10 +296,10 @@ class UsersControllerTest < ActionController::TestCase
     u.auth_source = AuthSource.find(1)
     u.save!
 
-    put :update, :id => u.id, :user => {:auth_source_id => '', :password => 'newpass', :password_confirmation => 'newpass'}
+    put :update, :id => u.id, :user => {:auth_source_id => '', :password => 'newpass123', :password_confirmation => 'newpass123'}
 
     assert_equal nil, u.reload.auth_source
-    assert u.check_password?('newpass')
+    assert u.check_password?('newpass123')
   end
 
   def test_update_notified_project
@@ -330,6 +323,18 @@ class UsersControllerTest < ActionController::TestCase
     u = User.find(2)
     assert_equal 'selected', u.mail_notification
     assert_equal [1, 2], u.notified_projects_ids.sort
+  end
+
+  def test_update_status_should_not_update_attributes
+    user = User.find(2)
+    user.pref[:no_self_notified] = '1'
+    user.pref.save
+
+    put :update, :id => 2, :user => {:status => 3}
+    assert_response 302
+    user = User.find(2)
+    assert_equal 3, user.status
+    assert_equal '1', user.pref[:no_self_notified]
   end
 
   def test_destroy

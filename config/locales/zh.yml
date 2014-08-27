@@ -212,8 +212,6 @@ zh:
   mail_subject_wiki_content_updated: "'%{id}' wiki页面已更新。"
   mail_body_wiki_content_updated: "'%{id}' wiki页面已由 %{author} 更新。"
 
-  gui_validation_error: 1 个错误
-  gui_validation_error_plural: "%{count} 个错误"
 
   field_name: 名称
   field_description: 描述
@@ -400,7 +398,6 @@ zh:
   permission_edit_own_time_entries: 编辑自己的耗时
   permission_manage_news: 管理新闻
   permission_comment_news: 为新闻添加评论
-  permission_manage_documents: 管理文档
   permission_view_documents: 查看文档
   permission_manage_files: 管理文件
   permission_view_files: 查看文件
@@ -525,8 +522,6 @@ zh:
   label_text: 文本
   label_attribute: 属性
   label_attribute_plural: 属性
-  label_download: "%{count} 次下载"
-  label_download_plural: "%{count} 次下载"
   label_no_data: 没有任何数据可供显示
   label_change_status: 变更状态
   label_history: 历史记录
@@ -629,8 +624,6 @@ zh:
   label_repository: 版本库
   label_repository_plural: 版本库
   label_browse: 浏览
-  label_modification: "%{count} 个更新"
-  label_modification_plural: "%{count} 个更新"
   label_branch: 分支
   label_tag: 标签
   label_revision: 修订
@@ -863,7 +856,6 @@ zh:
   text_subprojects_destroy_warning: "以下子项目也将被同时删除：%{value}"
   text_workflow_edit: 选择角色和跟踪标签来编辑工作流程
   text_are_you_sure: 您确定？
-  text_are_you_sure_with_children: "删除问题及子任务？"
   text_journal_changed: "%{label} 从 %{old} 变更为 %{new}"
   text_journal_set_to: "%{label} 被设置为 %{value}"
   text_journal_deleted: "%{label} 已删除 (%{old})"
@@ -1067,3 +1059,37 @@ zh:
   label_attribute_of_assigned_to: 分配给 %{name}
   label_attribute_of_fixed_version: 目标版本 %{name}
   label_copy_subtasks: 复制子任务
+<<<<<<< HEAD
+=======
+  label_copied_to: 复制到
+  label_copied_from: 复制于
+  label_any_issues_in_project: 项目内任意问题
+  label_any_issues_not_in_project: 项目外任意问题
+  field_private_notes: 私有注解
+  permission_view_private_notes: 查看私有注解
+  permission_set_notes_private: 设置为私有注解
+  label_no_issues_in_project: 项目内无相关问题
+  label_any: 全部
+  label_last_n_weeks: 上 %{count} 周前
+  setting_cross_project_subtasks: 支持跨项目子任务
+  label_cross_project_descendants: 与子项目共享
+  label_cross_project_tree: 与项目树共享
+  label_cross_project_hierarchy: 与项目继承层次共享
+  label_cross_project_system: 与所有项目共享
+  button_hide: 隐藏
+  setting_non_working_week_days: 非工作日
+  label_in_the_next_days: 在未来几天之内
+  label_in_the_past_days: 在过去几天之内
+  label_attribute_of_user: 用户是 %{name}
+  text_turning_multiple_off: 如果您停用多重值设定，重复的值将被移除，以使每个项目仅保留一个值
+  label_attribute_of_issue: 问题是 %{name}
+  permission_add_documents: 添加文档
+  permission_edit_documents: 编辑文档
+  permission_delete_documents: 删除文档
+  label_gantt_progress_line: 进度线
+  setting_jsonp_enabled: 启用JSONP支持
+  field_inherit_members: 继承父项目成员
+  field_closed_on: 结束日期
+  setting_default_projects_tracker_ids: 新建项目默认跟踪标签
+  label_total_time: 合计
+>>>>>>> 292cf401008af7502204dc8cdd1e1da19a5f9510

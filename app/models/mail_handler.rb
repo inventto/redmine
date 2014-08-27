@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -38,7 +38,9 @@ class MailHandler < ActionMailer::Base
     # Status overridable by default
     @@handler_options[:allow_override] << 'status' unless @@handler_options[:issue].has_key?(:status)
 
-    @@handler_options[:no_permission_check] = (@@handler_options[:no_permission_check].to_s == '1' ? true : false)
+    @@handler_options[:no_account_notice] = (@@handler_options[:no_account_notice].to_s == '1')
+    @@handler_options[:no_notification] = (@@handler_options[:no_notification].to_s == '1')
+    @@handler_options[:no_permission_check] = (@@handler_options[:no_permission_check].to_s == '1')
 
     email.force_encoding('ASCII-8BIT') if email.respond_to?(:force_encoding)
     super(email)
@@ -97,7 +99,10 @@ class MailHandler < ActionMailer::Base
           if logger && logger.info
             logger.info "MailHandler: [#{@user.login}] account created"
           end
-          Mailer.account_information(@user, @user.password).deliver
+          add_user_to_group(@@handler_options[:default_group])
+          unless @@handler_options[:no_account_notice]
+            Mailer.account_information(@user, @user.password).deliver
+          end
         else
           if logger && logger.error
             logger.error "MailHandler: could not create account for [#{sender_email}]"
@@ -107,7 +112,7 @@ class MailHandler < ActionMailer::Base
       else
         # Default behaviour, emails from unknown users are ignored
         if logger && logger.info
-          logger.info  "MailHandler: ignoring email from unknown user [#{sender_email}]" 
+          logger.info  "MailHandler: ignoring email from unknown user [#{sender_email}]"
         end
         return false
       end
@@ -182,7 +187,7 @@ class MailHandler < ActionMailer::Base
   end
 
   # Adds a note to an existing issue
-  def receive_issue_reply(issue_id)
+  def receive_issue_reply(issue_id, from_journal=nil)
     issue = Issue.find_by_id(issue_id)
     return unless issue
     # check permission
@@ -197,6 +202,10 @@ class MailHandler < ActionMailer::Base
     @@handler_options[:issue].clear
 
     journal = issue.init_journal(user)
+    if from_journal && from_journal.private_notes?
+      # If the received email was a reply to a private note, make the added note private
+      issue.private_notes = true
+    end
     issue.safe_attributes = issue_attributes_from_keywords(issue)
     issue.safe_attributes = {'custom_field_values' => custom_field_values_from_keywords(issue)}
     journal.notes = cleaned_up_text_body
@@ -212,7 +221,7 @@ class MailHandler < ActionMailer::Base
   def receive_journal_reply(journal_id)
     journal = Journal.find_by_id(journal_id)
     if journal && journal.journalized_type == 'Issue'
-      receive_issue_reply(journal.journalized_id)
+      receive_issue_reply(journal.journalized_id, journal)
     end
   end
 
@@ -277,7 +286,7 @@ class MailHandler < ActionMailer::Base
     if user.allowed_to?("add_#{obj.class.name.underscore}_watchers".to_sym, obj.project)
       addresses = [email.to, email.cc].flatten.compact.uniq.collect {|a| a.strip.downcase}
       unless addresses.empty?
-        watchers = User.active.find(:all, :conditions => ['LOWER(mail) IN (?)', addresses])
+        watchers = User.active.where('LOWER(mail) IN (?)', addresses).all
         watchers.each {|w| obj.add_watcher(w)}
       end
     end
@@ -351,7 +360,7 @@ class MailHandler < ActionMailer::Base
     }.delete_if {|k, v| v.blank? }
 
     if issue.new_record? && attrs['tracker_id'].nil?
-      attrs['tracker_id'] = issue.project.trackers.find(:first).try(:id)
+      attrs['tracker_id'] = issue.project.trackers.first.try(:id)
     end
 
     attrs
@@ -387,19 +396,6 @@ class MailHandler < ActionMailer::Base
 
   def cleaned_up_subject
     subject = email.subject.to_s
-    unless subject.respond_to?(:encoding)
-      # try to reencode to utf8 manually with ruby1.8
-      begin
-        if h = email.header[:subject]
-          # http://tools.ietf.org/html/rfc2047#section-4
-          if m = h.value.match(/=\?([^\?]+)\?[BbQq]\?/)
-            subject = Redmine::CodesetUtil.to_utf8(subject, m[1])
-          end
-        end
-      rescue
-        # nop
-      end
-    end
     subject.strip[0,255]
   end
 
@@ -422,18 +418,19 @@ class MailHandler < ActionMailer::Base
     assign_string_attribute_with_limit(user, 'login', email_address, User::LOGIN_LENGTH_LIMIT)
 
     names = fullname.blank? ? email_address.gsub(/@.*$/, '').split('.') : fullname.split
-    assign_string_attribute_with_limit(user, 'firstname', names.shift)
-    assign_string_attribute_with_limit(user, 'lastname', names.join(' '))
+    assign_string_attribute_with_limit(user, 'firstname', names.shift, 30)
+    assign_string_attribute_with_limit(user, 'lastname', names.join(' '), 30)
     user.lastname = '-' if user.lastname.blank?
 
     password_length = [Setting.password_min_length.to_i, 10].max
     user.password = Redmine::Utils.random_hex(password_length / 2 + 1)
     user.language = Setting.default_language
+    user.mail_notification = 'only_my_events'
 
     unless user.valid?
       user.login = "user#{Redmine::Utils.random_hex(6)}" unless user.errors[:login].blank?
       user.firstname = "-" unless user.errors[:firstname].blank?
-      user.lastname  = "-" unless user.errors[:lastname].blank?
+      (puts user.errors[:lastname];user.lastname  = "-") unless user.errors[:lastname].blank?
     end
 
     user
@@ -449,6 +446,9 @@ class MailHandler < ActionMailer::Base
     end
     if addr.present?
       user = self.class.new_user_from_attributes(addr, name)
+      if @@handler_options[:no_notification]
+        user.mail_notification = 'none'
+      end
       if user.save
         user
       else
@@ -458,6 +458,19 @@ class MailHandler < ActionMailer::Base
     else
       logger.error "MailHandler: failed to create User: no FROM address found" if logger
       nil
+    end
+  end
+
+	# Adds the newly created user to default group
+  def add_user_to_group(default_group)
+    if default_group.present?
+      default_group.split(',').each do |group_name|
+        if group = Group.named(group_name).first
+          group.users << @user
+        elsif logger
+          logger.warn "MailHandler: could not add user to [#{group_name}], group not found"
+        end
+      end
     end
   end
 
@@ -481,7 +494,7 @@ class MailHandler < ActionMailer::Base
                  }
     if assignee.nil? && keyword.match(/ /)
       firstname, lastname = *(keyword.split) # "First Last Throwaway"
-      assignee ||= assignable.detect {|a| 
+      assignee ||= assignable.detect {|a|
                      a.is_a?(User) && a.firstname.to_s.downcase == firstname &&
                        a.lastname.to_s.downcase == lastname
                    }
