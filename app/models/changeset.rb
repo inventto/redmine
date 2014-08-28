@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2013  Jean-Philippe Lang
+# Copyright (C) 2006-2014  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -124,7 +124,7 @@ class Changeset < ActiveRecord::Base
     ref_keywords = Setting.commit_ref_keywords.downcase.split(",").collect(&:strip)
     ref_keywords_any = ref_keywords.delete('*')
     # keywords used to fix issues
-    fix_keywords = Setting.commit_fix_keywords.downcase.split(",").collect(&:strip)
+    fix_keywords = Setting.commit_update_keywords_array.map {|r| r['keywords']}.flatten.compact
 
     kw_regexp = (ref_keywords + fix_keywords).collect{|kw| Regexp.escape(kw)}.join("|")
 
@@ -132,7 +132,7 @@ class Changeset < ActiveRecord::Base
     action = ""
     add_time_entry = false
     comments.scan(/([\s\(\[,-]|^)((#{kw_regexp})[\s:]+)?(#\d+\s+(#{TIMELOG_RE})?([\s,;&]+#\d+\s+(#{TIMELOG_RE})?)*)(?=[[:punct:]]|\s|<|$)/i) do |match|
-      action, refs = match[2], match[3]
+      action, refs = match[2].to_s.downcase, match[3]
       logger.info ["---->ACTION, REFS:", comments, kw_regexp.inspect, action, refs].join("\n")
       next unless action.present? || ref_keywords_any
       info = {}
@@ -209,6 +209,15 @@ class Changeset < ActiveRecord::Base
         if (par = pair[5]) and par != info[:user] and par != pair[1] and par != pair[3]
           info[:pair3] = par
         end
+      #refs.scan(/#(\d+)(\s+@#{TIMELOG_RE})?/).each do |m|
+        issue, hours = find_referenced_issue_by_id(m[0].to_i), m[2]
+        if issue
+          referenced_issues << issue
+          # Don't update issues or log time when importing old commits
+          unless repository.created_on && committed_on && committed_on < repository.created_on
+            fix_issue(issue, action) if fix_keywords.include?(action)
+            log_time(issue, hours) if hours && Setting.commit_logtime_enabled?
+          end
       end
 
       issue = nil
@@ -360,13 +369,14 @@ end
   end
 
   def text_tag(ref_project=nil)
-    tag = if scmid?
-      "commit:#{scmid}"
-    else
-      "r#{revision}"
-    end
+    repo = ""
     if repository && repository.identifier.present?
-      tag = "#{repository.identifier}|#{tag}"
+      repo = "#{repository.identifier}|"
+    end
+    tag = if scmid?
+      "commit:#{repo}#{scmid}"
+    else
+      "#{repo}r#{revision}"
     end
     if ref_project && project && ref_project != project
       tag = "#{project.identifier}:#{tag}"
@@ -420,7 +430,7 @@ end
   # Finds an issue that can be referenced by the commit message
   def find_referenced_issue_by_id(id)
     return nil if id.blank?
-    issue = Issue.find_by_id(id.to_i, :include => :project)
+    issue = Issue.includes(:project).where(:id => id.to_i).first
     if Setting.commit_cross_project_ref?
       # all issues can be referenced/fixed
     elsif issue
@@ -436,25 +446,26 @@ end
 
   private
 
-  def fix_issue(issue, user)
-    status = IssueStatus.find_by_id(Setting.commit_fix_status_id.to_i)
-    if status.nil?
-      logger.warn("No status matches commit_fix_status_id setting (#{Setting.commit_fix_status_id})") if logger
-      return issue
-    end
-
+  # Updates the +issue+ according to +action+
+  def fix_issue(issue, action)
     # the issue may have been updated by the closure of another one (eg. duplicate)
     issue.reload
     # don't change the status is the issue is closed
     return if issue.status && issue.status.is_closed?
 
-    journal = issue.init_journal(user || User.anonymous, ll(Setting.default_language, :text_status_changed_by_changeset, text_tag(issue.project)))
-    issue.status = status
-    unless Setting.commit_fix_done_ratio.blank?
-      issue.done_ratio = Setting.commit_fix_done_ratio.to_i
+    journal = issue.init_journal(user || User.anonymous,
+                                 ll(Setting.default_language,
+                                    :text_status_changed_by_changeset,
+                                    text_tag(issue.project)))
+    rule = Setting.commit_update_keywords_array.detect do |rule|
+      rule['keywords'].include?(action) &&
+        (rule['if_tracker_id'].blank? || rule['if_tracker_id'] == issue.tracker_id.to_s)
+    end
+    if rule
+      issue.assign_attributes rule.slice(*Issue.attribute_names)
     end
     Redmine::Hook.call_hook(:model_changeset_scan_commit_for_issue_ids_pre_issue_update,
-                            { :changeset => self, :issue => issue })
+                            { :changeset => self, :issue => issue, :action => action })
     unless issue.save
       logger.warn("Issue ##{issue.id} could not be saved by changeset #{id}: #{issue.errors.full_messages}") if logger
     end

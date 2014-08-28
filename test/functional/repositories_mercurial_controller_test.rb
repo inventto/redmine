@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2013  Jean-Philippe Lang
+# Copyright (C) 2006-2014  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -26,7 +26,7 @@ class RepositoriesMercurialControllerTest < ActionController::TestCase
   REPOSITORY_PATH = Rails.root.join('tmp/test/mercurial_repository').to_s
   CHAR_1_HEX = "\xc3\x9c"
   PRJ_ID     = 3
-  NUM_REV    = 32
+  NUM_REV    = 34
 
   ruby19_non_utf8_pass =
      (RUBY_VERSION >= '1.9' && Encoding.default_external.to_s != 'UTF-8')
@@ -456,6 +456,22 @@ class RepositoriesMercurialControllerTest < ActionController::TestCase
                      :sibling => { :tag => 'td',
                                    :content => /test-#{@char_1}.txt/ }
         end
+      end
+    end
+
+    def test_revision
+      assert_equal 0, @repository.changesets.count
+      @repository.fetch_changesets
+      @project.reload
+      assert_equal NUM_REV, @repository.changesets.count
+      ['1', '9d5b5b', '9d5b5b004199'].each do |r|
+        with_settings :default_language => "en" do
+          get :revision, :id => PRJ_ID, :rev => r
+          assert_response :success
+          assert_template 'revision'
+          assert_select 'title',
+                        :text => 'Revision 1:9d5b5b004199 - Added 2 files and modified one. - eCookbook Subproject 1 - Redmine'
+          end
       end
     end
 

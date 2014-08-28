@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2013  Jean-Philippe Lang
+# Copyright (C) 2006-2014  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -28,12 +28,19 @@ class IssueRelationTest < ActiveSupport::TestCase
            :issue_relations,
            :enabled_modules,
            :enumerations,
+<<<<<<< HEAD
            :trackers
 <<<<<<< HEAD
 =======
 
   include Redmine::I18n
 >>>>>>> 292cf401008af7502204dc8cdd1e1da19a5f9510
+=======
+           :trackers,
+           :projects_trackers
+
+  include Redmine::I18n
+>>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a
 
   def test_create
     from = Issue.find(1)
@@ -169,5 +176,52 @@ class IssueRelationTest < ActiveSupport::TestCase
         )
     assert !r.save
     assert_not_equal [], r.errors[:base]
+<<<<<<< HEAD
+=======
+  end
+
+  def test_create_should_make_journal_entry
+    from = Issue.find(1)
+    to   = Issue.find(2)
+    from_journals = from.journals.size
+    to_journals   = to.journals.size
+    relation = IssueRelation.new(:issue_from => from, :issue_to => to,
+                                 :relation_type => IssueRelation::TYPE_PRECEDES)
+    assert relation.save
+    from.reload
+    to.reload
+    relation.reload
+    assert_equal from.journals.size, (from_journals + 1)
+    assert_equal to.journals.size, (to_journals + 1)
+    assert_equal 'relation', from.journals.last.details.last.property
+    assert_equal 'precedes', from.journals.last.details.last.prop_key
+    assert_equal '2', from.journals.last.details.last.value
+    assert_nil   from.journals.last.details.last.old_value
+    assert_equal 'relation', to.journals.last.details.last.property
+    assert_equal 'follows', to.journals.last.details.last.prop_key
+    assert_equal '1', to.journals.last.details.last.value
+    assert_nil   to.journals.last.details.last.old_value
+  end
+
+  def test_delete_should_make_journal_entry
+    relation = IssueRelation.find(1)
+    from = relation.issue_from
+    to   = relation.issue_to
+    from_journals = from.journals.size
+    to_journals   = to.journals.size
+    assert relation.destroy
+    from.reload
+    to.reload
+    assert_equal from.journals.size, (from_journals + 1)
+    assert_equal to.journals.size, (to_journals + 1)
+    assert_equal 'relation', from.journals.last.details.last.property
+    assert_equal 'blocks', from.journals.last.details.last.prop_key
+    assert_equal '9', from.journals.last.details.last.old_value
+    assert_nil   from.journals.last.details.last.value
+    assert_equal 'relation', to.journals.last.details.last.property
+    assert_equal 'blocked', to.journals.last.details.last.prop_key
+    assert_equal '10', to.journals.last.details.last.old_value
+    assert_nil   to.journals.last.details.last.value
+>>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a
   end
 end
