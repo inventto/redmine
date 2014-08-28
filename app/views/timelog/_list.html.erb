@@ -25,7 +25,7 @@
     <td class="checkbox hide-when-print"><%= check_box_tag("ids[]", entry.id, false, :id => nil) %></td>
     <%= raw @query.inline_columns.map {|column| "<td class=\"#{column.css_classes}\">#{column_content(column, entry)}</td>"}.join %>
     <td class="cost">R$ <%= entry.cost %></td>
-    <td class="contract"><%= entry.contract.title %></td>
+    <td class="contract"><%= entry.contract.nil? ? "Contrato não encontrado" : entry.contract.title %></td>
     <td class="buttons">
     <% if entry.editable_by?(User.current) -%>
         <%= link_to image_tag('edit.png'), edit_time_entry_path(entry),

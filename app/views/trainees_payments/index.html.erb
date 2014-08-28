@@ -17,7 +17,7 @@
         <%= content_tag :td, Time.now.strftime('%d/%m/%Y')%>
         <%= content_tag :td, User.find(5) %>
         <%= content_tag :td, Project.find(11) %>
-        <%= content_tag :td, TimeEntry.where(:comments => "Pagamento #{User.find(k).name} #{@mes-1}/#{@ano}").first.comments %>
+        <%= content_tag :td, TimeEntry.where(:comments => "Pagamento #{User.find(k).name} #{@mes-1}/#{@ano}").first.comments rescue "" %>
         <%= content_tag :td, @horas[k] * v[:hora] - v[:ciee] %>
       <% end %>
     <% end %>
