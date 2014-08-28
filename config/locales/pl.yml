@@ -945,13 +945,8 @@ pl:
   notice_not_authorized_archived_project: The project you're trying to access has been archived.
   label_principal_search: "Szukaj użytkownika lub grupy:"
   label_user_search: "Szukaj użytkownika:"
-<<<<<<< HEAD
-  field_visible: Visible
-  setting_commit_logtime_activity_id: Activity for logged time
-=======
   field_visible: Widoczne
   setting_commit_logtime_activity_id: Aktywność dla śledzonego czasu
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a
   text_time_logged_by_changeset: Applied in changeset %{value}.
   setting_commit_logtime_enabled: Włącz śledzenie czasu
   notice_gantt_chart_truncated: The chart was truncated because it exceeds the maximum number of items that can be displayed (%{max})
@@ -1101,26 +1096,12 @@ pl:
   text_turning_multiple_off: If you disable multiple values, multiple values will be
     removed in order to preserve only one value per item.
   label_attribute_of_issue: Issue's %{name}
-<<<<<<< HEAD
-  permission_add_documents: Add documents
-  permission_edit_documents: Edit documents
-  permission_delete_documents: Delete documents
-  label_gantt_progress_line: Progress line
-  setting_jsonp_enabled: Enable JSONP support
-  field_inherit_members: Inherit members
-  field_closed_on: Closed
-  setting_default_projects_tracker_ids: Default trackers for new projects
-  label_total_time: Ogółem
-  text_scm_config: You can configure your SCM commands in config/configuration.yml. Please restart the application after editing it.
-  text_scm_command_not_available: SCM command is not available. Please check settings on the administration panel.
-  setting_emails_header: Email header
-=======
   permission_add_documents: Dodawanie dokumentów
   permission_edit_documents: Edycja dokumentów
   permission_delete_documents: Usuwanie dokumentów
   label_gantt_progress_line: Linia postępu
   setting_jsonp_enabled: Uaktywnij wsparcie dla JSONP
-  field_inherit_members: Dziedziczenie członków
+  field_inherit_members: Dziedziczenie uczestników
   field_closed_on: Data zamknięcia
   field_generate_password: Wygeneruj hasło
   setting_default_projects_tracker_ids: Domyślne typy zagadnień dla nowych projektów
@@ -1151,8 +1132,8 @@ pl:
   setting_force_default_language_for_loggedin: Wymuś domyślny język dla zalogowanych użytkowników
   label_custom_field_select_type: Select the type of object to which the custom field
     is to be attached
+  label_issue_assigned_to_updated: Uaktualniono osobę przypisaną
   label_check_for_updates: Check for updates
   label_latest_compatible_version: Latest compatible version
   label_unknown_plugin: Unknown plugin
   label_radio_buttons: radio buttons
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a

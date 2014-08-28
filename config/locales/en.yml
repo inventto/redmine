@@ -407,12 +407,9 @@ en:
   setting_non_working_week_days: Non-working days
   setting_jsonp_enabled: Enable JSONP support
   setting_default_projects_tracker_ids: Default trackers for new projects
-<<<<<<< HEAD
-=======
   setting_mail_handler_excluded_filenames: Exclude attachments by name
   setting_force_default_language_for_anonymous: Force default language for anonymous users
   setting_force_default_language_for_loggedin: Force default language for logged-in users
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a
 
   permission_add_project: Create project
   permission_add_subprojects: Create subprojects
@@ -511,6 +508,7 @@ en:
   label_issue_updated: Issue updated
   label_issue_note_added: Note added
   label_issue_status_updated: Status updated
+  label_issue_assigned_to_updated: Assignee updated
   label_issue_priority_updated: Priority updated
   label_document: Document
   label_document_new: New document

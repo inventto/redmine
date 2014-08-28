@@ -410,12 +410,9 @@ bg:
   setting_non_working_week_days: Не работни дни
   setting_jsonp_enabled: Разрешаване на поддръжка на JSONP
   setting_default_projects_tracker_ids: Тракери по подразбиране за нови проекти
-<<<<<<< HEAD
-=======
   setting_mail_handler_excluded_filenames: Имена на прикачени файлове, които да се пропускат при приемане на e-mail-и (например *.vcf, companylogo.gif).
   setting_force_default_language_for_anonymous: Задължително език по подразбиране за анонимните потребители
   setting_force_default_language_for_loggedin: Задължително език по подразбиране за потребителите, влезли в Redmine
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a
 
   permission_add_project: Създаване на проект
   permission_add_subprojects: Създаване на подпроекти
@@ -514,6 +511,7 @@ bg:
   label_issue_updated: Обновена задача
   label_issue_note_added: Добавена бележка
   label_issue_status_updated: Обновено състояние
+  label_issue_assigned_to_updated: Задачата е с назначен нов изпълнител
   label_issue_priority_updated: Обновен приоритет
   label_document: Документ
   label_document_new: Нов документ

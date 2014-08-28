@@ -145,10 +145,7 @@ de:
         not_same_project: "gehört nicht zum selben Projekt"
         circular_dependency: "Diese Beziehung würde eine zyklische Abhängigkeit erzeugen"
         cant_link_an_issue_with_a_descendant: "Ein Ticket kann nicht mit einer Ihrer Unteraufgaben verlinkt werden"
-<<<<<<< HEAD
-=======
         earlier_than_minimum_start_date: "cannot be earlier than %{date} because of preceding issues"
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a
 
   actionview_instancetag_blank_option: Bitte auswählen
 
@@ -572,6 +569,7 @@ de:
   label_internal: Intern
   label_issue: Ticket
   label_issue_added: Ticket hinzugefügt
+  label_issue_assigned_to_updated: Bearbeiter aktualisiert
   label_issue_category: Ticket-Kategorie
   label_issue_category_new: Neue Kategorie
   label_issue_category_plural: Ticket-Kategorien
@@ -995,11 +993,8 @@ de:
   setting_enabled_scm: Aktivierte Versionskontrollsysteme
   setting_feeds_limit: Max. Anzahl Einträge pro Atom-Feed
   setting_file_max_size_displayed: Maximale Größe inline angezeigter Textdateien
-<<<<<<< HEAD
-=======
   setting_force_default_language_for_anonymous: Standardsprache für anonyme Benutzer erzwingen
   setting_force_default_language_for_loggedin: Standardsprache für angemeldete Benutzer erzwingen
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a
   setting_gantt_items_limit: Maximale Anzahl von Aufgaben die im Gantt-Chart angezeigt werden
   setting_gravatar_default: Standard-Gravatar-Bild
   setting_gravatar_enabled: Gravatar-Benutzerbilder benutzen
@@ -1041,10 +1036,8 @@ de:
   setting_user_format: Benutzer-Anzeigeformat
   setting_welcome_text: Willkommenstext
   setting_wiki_compression: Wiki-Historie komprimieren
-  setting_default_projects_tracker_ids: Standardmäßig aktivierte Tracker für neue Projekte
 
   status_active: aktiv
-  status_registered: nicht aktivierte
   status_locked: gesperrt
   status_registered: nicht aktivierte
 
@@ -1132,67 +1125,4 @@ de:
   version_status_locked: gesperrt
   version_status_open: offen
 
-  label_parent_revision: Vorgänger
-  label_child_revision: Nachfolger
-  error_scm_annotate_big_text_file: Der Eintrag kann nicht umgesetzt werden, da er die maximale Textlänge überschreitet.
-  setting_default_issue_start_date_to_creation_date: Aktuelles Datum als Beginn für neue Tickets verwenden
-  button_edit_section: Diesen Bereich bearbeiten
-  setting_repositories_encodings: Encoding von Anhängen und Repositories
-  description_all_columns: Alle Spalten
-  button_export: Exportieren
-  label_export_options: "%{export_format} Export-Eigenschaften"
-  error_attachment_too_big: Diese Datei kann nicht hochgeladen werden, da sie die maximale Dateigröße von (%{max_size}) überschreitet.
-  notice_failed_to_save_time_entries: "Gescheitert %{count} Zeiteinträge für %{total} von ausgewählten: %{ids} zu speichern." 
-  label_x_issues:
-    zero:  0 Tickets
-    one:   1 Ticket
-    other: "%{count} Tickets"
-  label_repository_new: Neues Repository
-  field_repository_is_default: Haupt-Repository
-  label_copy_attachments: Anhänge Kopieren
-  label_item_position: "%{position}/%{count}"
-  label_completed_versions: Abgeschlossene Versionen
-  field_multiple: Mehrere Werte
-  setting_commit_cross_project_ref: Erlauben auf Tickets aller anderen Projekte zu referenzieren
-  text_issue_conflict_resolution_add_notes: Meine Änderungen übernehmen und alle anderen Änderungen verwerfen
-  text_issue_conflict_resolution_overwrite: Meine Änderungen trotzdem übernehmen (vorherige Notizen bleiben erhalten aber manche können überschrieben werden)
-  notice_issue_update_conflict: Das Ticket wurde von einem anderen Nutzer überarbeitet während Ihrer Bearbeitung.
-  text_issue_conflict_resolution_cancel: Meine Änderungen verwerfen und %{link} neu anzeigen
-  permission_manage_related_issues: Zugehörige Tickets verwalten
-  field_auth_source_ldap_filter: LDAP Filter
-  label_search_for_watchers: Nach hinzufügbaren Beobachtern suchen
-  notice_account_deleted: Ihr Benutzerkonto wurde unwiderruflich gelöscht.
-  setting_unsubscribe: Erlaubt Benutzern das eigene Benutzerkonto zu löschen
-  button_delete_my_account: Mein Benutzerkonto löschen 
-  text_account_destroy_confirmation: Möchten Sie wirklich fortfahren?\nIhr Benutzerkonto wird für immer gelöscht und kann nicht wiederhergestellt werden.
-  error_session_expired: Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.
-  text_session_expiration_settings: "Achtung: Änderungen können aktuelle Sitzungen beenden, Ihre eingeschlossen!" 
-  setting_session_lifetime: Längste Dauer einer Sitzung
-  setting_session_timeout: Zeitüberschreitung bei Inaktivität
-  label_session_expiration: Ende einer Sitzung
-  permission_close_project: Schließen / erneutes Öffnen eines Projekts
-  label_show_closed_projects: Geschlossene Projekte anzeigen
-  button_close: Schließen
-  button_reopen: Öffnen
-  project_status_active: aktiv
-  project_status_closed: geschlossen
-  project_status_archived: archiviert
-  text_project_closed: Dieses Projekt ist geschlossen und kann nicht bearbeitet werden.
-  notice_user_successful_create: Benutzer %{id} angelegt.
-  field_core_fields: Standardwerte
-  field_timeout: Auszeit (in Sekunden)
-  setting_thumbnails_enabled: Vorschaubilder von Dateianhängen anzeigen
-  setting_thumbnails_size: Größe der Vorschaubilder (in Pixel)
-  label_status_transitions: Statusänderungen
-  label_fields_permissions: Feldberechtigungen
-  label_readonly: Nur-Lese-Zugriff
-  label_required: Erforderlich
-  text_repository_identifier_info: 'Kleinbuchstaben (a-z), Ziffern, Binde- und Unterstriche erlaubt.<br />Einmal gespeichert, kann die Kennung nicht mehr geändert werden.'
-  field_board_parent: Übergeordnetes Forum
-  label_attribute_of_project: "%{name} des Projekts"
-  label_attribute_of_author: "%{name} des Autors"
-  label_attribute_of_assigned_to: "%{name} des Bearbeiters"
-  label_attribute_of_fixed_version: "%{name} der Zielversion"
-  label_copy_subtasks: Unteraufgaben kopieren
   warning_attachments_not_saved: "%{count} Datei(en) konnten nicht gespeichert werden."
-  label_total_time: Gesamtzeit

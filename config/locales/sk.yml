@@ -893,83 +893,6 @@ sk:
   permission_manage_subtasks: Správa podúloh
   field_parent_issue: Nadradená úloha
   label_subtask_plural: Podúlohy
-<<<<<<< HEAD
-  label_project_copy_notifications: Zaslať emailové upozornenie behom kopírovania projektu
-  error_can_not_delete_custom_field: Nieje možné vymazať užívateľské pole
-  error_unable_to_connect: Nieje možné vymazať (%{value})
-  error_can_not_remove_role: Táto roľa sa používa a nemôže byť vymazaná.
-  error_can_not_delete_tracker: Táto fronta obsahuje úlohy a nemôže byť vymazaná.
-  field_principal: Principal
-  label_my_page_block: My page block
-  notice_failed_to_save_members: "Failed to save member(s): %{errors}."
-  text_zoom_out: Zoom out
-  text_zoom_in: Zoom in
-  notice_unable_delete_time_entry: Unable to delete time log entry.
-  label_overall_spent_time: Overall spent time
-  field_time_entries: Log time
-  project_module_gantt: Gantt
-  project_module_calendar: Calendar
-  button_edit_associated_wikipage: "Edit associated Wiki page: %{page_title}"
-  field_text: Text field
-  label_user_mail_option_only_owner: Only for things I am the owner of
-  setting_default_notification_option: Default notification option
-  label_user_mail_option_only_my_events: Only for things I watch or I'm involved in
-  label_user_mail_option_only_assigned: Only for things I am assigned to
-  label_user_mail_option_none: No events
-  field_member_of_group: Assignee's group
-  field_assigned_to_role: Assignee's role
-  notice_not_authorized_archived_project: The project you're trying to access has been archived.
-  label_principal_search: "Search for user or group:"
-  label_user_search: "Search for user:"
-  field_visible: Visible
-  setting_commit_logtime_activity_id: Activity for logged time
-  text_time_logged_by_changeset: Applied in changeset %{value}.
-  setting_commit_logtime_enabled: Enable time logging
-  notice_gantt_chart_truncated: The chart was truncated because it exceeds the maximum number of items that can be displayed (%{max})
-  setting_gantt_items_limit: Maximum number of items displayed on the gantt chart
-  field_warn_on_leaving_unsaved: Warn me when leaving a page with unsaved text
-  text_warn_on_leaving_unsaved: The current page contains unsaved text that will be lost if you leave this page.
-  label_my_queries: My custom queries
-  text_journal_changed_no_detail: "%{label} updated"
-  label_news_comment_added: Comment added to a news
-  button_expand_all: Expand all
-  button_collapse_all: Collapse all
-  label_additional_workflow_transitions_for_assignee: Additional transitions allowed when the user is the assignee
-  label_additional_workflow_transitions_for_author: Additional transitions allowed when the user is the author
-  label_bulk_edit_selected_time_entries: Bulk edit selected time entries
-  text_time_entries_destroy_confirmation: Are you sure you want to delete the selected time entr(y/ies)?
-  label_role_anonymous: Anonymous
-  label_role_non_member: Non member
-  label_issue_note_added: Note added
-  label_issue_status_updated: Status updated
-  label_issue_priority_updated: Priority updated
-  label_issues_visibility_own: Issues created by or assigned to the user
-  field_issues_visibility: Issues visibility
-  label_issues_visibility_all: All issues
-  permission_set_own_issues_private: Set own issues public or private
-  field_is_private: Private
-  permission_set_issues_private: Set issues public or private
-  label_issues_visibility_public: All non private issues
-  text_issues_destroy_descendants_confirmation: This will also delete %{count} subtask(s).
-  field_commit_logs_encoding: Kódovanie prenášaných správ
-  field_scm_path_encoding: Path encoding
-  text_scm_path_encoding_note: "Default: UTF-8"
-  field_path_to_repository: Path to repository
-  field_root_directory: Root directory
-  field_cvs_module: Module
-  field_cvsroot: CVSROOT
-  text_mercurial_repository_note: Local repository (e.g. /hgrepo, c:\hgrepo)
-  text_scm_command: Command
-  text_scm_command_version: Version
-  label_git_report_last_commit: Report last commit for files and directories
-  notice_issue_successful_create: Issue %{id} created.
-  label_between: between
-  setting_issue_group_assignment: Allow issue assignment to groups
-  label_diff: diff
-  text_git_repository_note: Repository is bare and local (e.g. /gitrepo, c:\gitrepo)
-  description_query_sort_criteria_direction: Sort direction
-  description_project_scope: Search scope
-=======
   label_project_copy_notifications: Zaslať emailové upozornenie počas kopírovania projektu
   error_can_not_delete_custom_field: Nie je možné vymazať vlastné pole
   error_unable_to_connect: Nie je možné sa pripojiť (%{value})
@@ -1045,7 +968,6 @@ sk:
   text_git_repository_note: Repozitár je iba jeden a je lokálny (e.g. /gitrepo, c:\gitrepo)
   description_query_sort_criteria_direction: Smer triedenia
   description_project_scope: Rozsah vyhľadávania
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a
   description_filter: Filter
   description_user_mail_notification: Nastavenia upozornení emailom
   description_date_from: Zadajte počiatočný dátum
@@ -1138,29 +1060,6 @@ sk:
   label_cross_project_descendants: S podprojektmi
   label_cross_project_tree: S projektovým stromom
   label_cross_project_hierarchy: S hierarchiou projektu
-<<<<<<< HEAD
-  label_cross_project_system: So všetkými projektami
-  button_hide: Hide
-  setting_non_working_week_days: Non-working days
-  label_in_the_next_days: in the next
-  label_in_the_past_days: in the past
-  label_attribute_of_user: User's %{name}
-  text_turning_multiple_off: If you disable multiple values, multiple values will be
-    removed in order to preserve only one value per item.
-  label_attribute_of_issue: Issue's %{name}
-  permission_add_documents: Add documents
-  permission_edit_documents: Edit documents
-  permission_delete_documents: Delete documents
-  label_gantt_progress_line: Progress line
-  setting_jsonp_enabled: Enable JSONP support
-  field_inherit_members: Inherit members
-  field_closed_on: Closed
-  setting_default_projects_tracker_ids: Default trackers for new projects
-  label_total_time: Celkovo
-  text_scm_config: You can configure your SCM commands in config/configuration.yml. Please restart the application after editing it.
-  text_scm_command_not_available: SCM command is not available. Please check settings on the administration panel.
-  setting_emails_header: Email header
-=======
   label_cross_project_system: So všetkými projektmi
   button_hide: Skryť
   setting_non_working_week_days: Dni voľna
@@ -1203,8 +1102,8 @@ sk:
     users
   label_custom_field_select_type: Select the type of object to which the custom field
     is to be attached
+  label_issue_assigned_to_updated: Assignee updated
   label_check_for_updates: Check for updates
   label_latest_compatible_version: Latest compatible version
   label_unknown_plugin: Unknown plugin
   label_radio_buttons: radio buttons
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a

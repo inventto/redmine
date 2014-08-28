@@ -916,7 +916,7 @@ pt-BR:
   permission_manage_project_activities: Gerenciar atividades do projeto
   error_unable_delete_issue_status: Não foi possível excluir situação da tarefa
   label_profile: Perfil
-  permission_manage_subtasks: Gerenciar sub-tarefas
+  permission_manage_subtasks: Gerenciar subtarefas
   field_parent_issue: Tarefa pai
   label_subtask_plural: Subtarefas
   label_project_copy_notifications: Enviar notificações por e-mail ao copiar projeto
@@ -994,11 +994,7 @@ pt-BR:
   label_diff: diff
   text_git_repository_note: "Repositório esta vazio e é local (ex: /gitrepo, c:\\gitrepo)"
 
-<<<<<<< HEAD
-  description_query_sort_criteria_direction: Direção da ordenação
-=======
   description_query_sort_criteria_direction: Escolher ordenação
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a
   description_project_scope: Escopo da pesquisa
   description_filter: Filtro
   description_user_mail_notification: Configuração de notificações por e-mail
@@ -1016,21 +1012,12 @@ pt-BR:
   description_wiki_subpages_reassign: Escolha uma nova página pai
   description_selected_columns: Colunas selecionadas
 
-<<<<<<< HEAD
-  label_parent_revision: Pais
-  label_child_revision: Filhos
-  error_scm_annotate_big_text_file: A entrada não pode ser anotada, pois excede o tamanho máximo do arquivo de texto.
-  setting_default_issue_start_date_to_creation_date: Usar data corrente como data inicial para novas tarefas
-  button_edit_section: Editar esta seção
-  setting_repositories_encodings: Encoding dos repositórios e anexos
-=======
   label_parent_revision: Pai
   label_child_revision: Filho
   error_scm_annotate_big_text_file: A entrada não pode ser anotada, pois excede o tamanho máximo do arquivo de texto.
   setting_default_issue_start_date_to_creation_date: Usar data corrente como data inicial para novas tarefas
   button_edit_section: Editar esta seção
   setting_repositories_encodings: Codificação dos repositórios e anexos
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a
   description_all_columns: Todas as colunas
   button_export: Exportar
   label_export_options: "Opções de exportação %{export_format}"
@@ -1044,16 +1031,6 @@ pt-BR:
   field_repository_is_default: Repositório principal
   label_copy_attachments: Copiar anexos
   label_item_position: "%{position}/%{count}"
-<<<<<<< HEAD
-  label_completed_versions: Versões completadas
-  text_project_identifier_info: Somente letras minúsculas (az), números, traços e sublinhados são permitidos. <br /> Uma vez salvo, o identificador não pode ser alterado.
-  field_multiple: Multiplos valores
-  setting_commit_cross_project_ref: Permitir que tarefas de todos os outros projetos sejam refenciadas e resolvidas
-  text_issue_conflict_resolution_add_notes: Adicione minhas anotações e descartar minhas outras mudanças
-  text_issue_conflict_resolution_overwrite: Aplicar as minhas alterações de qualquer maneira (notas anteriores serão mantidos, mas algumas mudanças podem ser substituídos)
-  notice_issue_update_conflict: A tarefa foi atualizada por um outro usuário, enquanto você estava editando.
-  text_issue_conflict_resolution_cancel: Descartar todas as minhas mudanças e re-exibir %{link}
-=======
   label_completed_versions: Versões concluídas
   text_project_identifier_info: Somente letras minúsculas (a-z), números, traços e sublinhados são permitidos. <br /> Uma vez salvo, o identificador não pode ser alterado.
   field_multiple: Múltiplos valores
@@ -1062,45 +1039,28 @@ pt-BR:
   text_issue_conflict_resolution_overwrite: Aplicar as minhas alterações de qualquer maneira (notas anteriores serão mantidas, mas algumas mudanças podem ser substituídas)
   notice_issue_update_conflict: A tarefa foi atualizada por um outro usuário, enquanto você estava editando.
   text_issue_conflict_resolution_cancel: Descartar todas as minhas mudanças e reexibir %{link}
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a
   permission_manage_related_issues: Gerenciar tarefas relacionadas
   field_auth_source_ldap_filter: Filtro LDAP
   label_search_for_watchers: Procurar por outros observadores para adiconar
   notice_account_deleted: Sua conta foi excluída permanentemente.
-<<<<<<< HEAD
-  setting_unsubscribe: Permitir aos usuários excluir sua conta própria
-  button_delete_my_account: Excluir minha conta
-  text_account_destroy_confirmation: |-
-    Tem certeza de que quer continuar?
-    Sua conta será excluída permanentemente, sem qualquer forma de reativá-lo.
-=======
   setting_unsubscribe: Permitir aos usuários excluir sua própria conta
   button_delete_my_account: Excluir minha conta
   text_account_destroy_confirmation: |-
     Tem certeza que quer continuar?
     Sua conta será excluída permanentemente, sem qualquer forma de reativá-la.
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a
   error_session_expired: A sua sessão expirou. Por favor, faça login novamente.
   text_session_expiration_settings: "Aviso: a alteração dessas configurações pode expirar as sessões atuais, incluindo a sua."
   setting_session_lifetime: duração máxima da sessão
   setting_session_timeout: tempo limite de inatividade da sessão
   label_session_expiration: "Expiração da sessão"
   permission_close_project: Fechar / reabrir o projeto
-<<<<<<< HEAD
-  label_show_closed_projects: Visualização de projetos fechados
-=======
   label_show_closed_projects: Visualizar projetos fechados
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a
   button_close: Fechar
   button_reopen: Reabrir
   project_status_active: ativo
   project_status_closed: fechado
   project_status_archived: arquivado
-<<<<<<< HEAD
-  text_project_closed: Este projeto é fechado e somente leitura.
-=======
   text_project_closed: Este projeto está fechado e somente leitura.
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a
   notice_user_successful_create: Usuário %{id} criado.
   field_core_fields: campos padrão
   field_timeout: Tempo de espera (em segundos)
@@ -1114,42 +1074,6 @@ pt-BR:
   field_board_parent: Fórum Pai
   label_attribute_of_project: "Projeto %{name}"
   label_attribute_of_author: "autor %{name}"
-<<<<<<< HEAD
-  label_attribute_of_assigned_to: "atribuído %{name}"
-  label_attribute_of_fixed_version: "versão alvo %{name}"
-  label_copy_subtasks: Copiar sub-tarefas
-  label_copied_to: copiada
-  label_copied_from: copiado
-  label_any_issues_in_project: quaisquer problemas em projeto
-  label_any_issues_not_in_project: todas as questões que não estão em projeto
-  field_private_notes: notas privadas
-  permission_view_private_notes: Ver notas privadas
-  permission_set_notes_private: Permitir alterar notas para privada
-  label_no_issues_in_project: sem problemas em projeto
-  label_any: todos
-  label_last_n_weeks: "últimas %{count} semanas"
-  setting_cross_project_subtasks: Permitir cruzamento de sub-tarefas entre projetos
-  label_cross_project_descendants: com sub-Projetos
-  label_cross_project_tree: Com uma Árvore fazer o Projeto
-  label_cross_project_hierarchy: Com uma hierarquia fazer o Projeto
-  label_cross_project_system: Com de Todos os Projetos
-  button_hide: Esconder
-  setting_non_working_week_days: dias não úteis
-  label_in_the_next_days: na próxima
-  label_in_the_past_days: no passado
-  label_attribute_of_user: Usuário %{name}
-  text_turning_multiple_off: Se você desativar vários valores, vários valores serão removidas, a fim de preservar a somente um valor por item.
-  label_attribute_of_issue: Emissão de %{name}
-  permission_add_documents: Adicionar documentos
-  permission_edit_documents: Editar documentos
-  permission_delete_documents: excluir documentos
-  label_gantt_progress_line: Linha de progresso
-  setting_jsonp_enabled: Ativar suporte JSONP
-  field_inherit_members: Herdar membros
-  field_closed_on: Fechado
-  setting_default_projects_tracker_ids: Tipos padrões para novos projeto
-  label_total_time: Total
-=======
   label_attribute_of_assigned_to: "atribuído a %{name}"
   label_attribute_of_fixed_version: "versão %{name}"
   label_copy_subtasks: Copiar subtarefas
@@ -1207,8 +1131,8 @@ pt-BR:
     users
   label_custom_field_select_type: Select the type of object to which the custom field
     is to be attached
+  label_issue_assigned_to_updated: Assignee updated
   label_check_for_updates: Check for updates
   label_latest_compatible_version: Latest compatible version
   label_unknown_plugin: Unknown plugin
   label_radio_buttons: radio buttons
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a

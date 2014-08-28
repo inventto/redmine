@@ -144,10 +144,7 @@ vi:
         not_same_project: "không thuộc cùng dự án"
         circular_dependency: "quan hệ có thể gây ra lặp vô tận"
         cant_link_an_issue_with_a_descendant: "Một vấn đề không thể liên kết tới một trong số những tác vụ con của nó"
-<<<<<<< HEAD
-=======
         earlier_than_minimum_start_date: "cannot be earlier than %{date} because of preceding issues"
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a
 
   direction: ltr
   date:
@@ -218,11 +215,7 @@ vi:
   notice_not_authorized: Bạn không có quyền xem trang này.
   notice_email_sent: "Email đã được gửi tới %{value}"
   notice_email_error: "Lỗi xảy ra khi gửi email (%{value})"
-<<<<<<< HEAD
-  notice_feeds_access_key_reseted: Mã số chứng thực RSS đã được tạo lại.
-=======
   notice_feeds_access_key_reseted: Mã số chứng thực Atom đã được tạo lại.
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a
   notice_failed_to_save_issues: "Thất bại khi lưu %{count} vấn đề trong %{total} lựa chọn: %{ids}."
   notice_no_issue_selected: "Không có vấn đề được chọn! Vui lòng kiểm tra các vấn đề bạn cần chỉnh sửa."
   notice_account_pending: "Thông tin tài khoản đã được tạo ra và đang chờ chứng thực từ ban quản trị."
@@ -645,11 +638,7 @@ vi:
   label_language_based: Theo ngôn ngữ người dùng
   label_sort_by: "Sắp xếp theo %{value}"
   label_send_test_email: Gửi một email kiểm tra
-<<<<<<< HEAD
-  label_feeds_access_key_created_on: "Mã chứng thực RSS được tạo ra cách đây %{value}"
-=======
   label_feeds_access_key_created_on: "Mã chứng thực Atom được tạo ra cách đây %{value}"
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a
   label_module_plural: Module
   label_added_time_by: "Thêm bởi %{author} cách đây %{age}"
   label_updated_time: "Cập nhật cách đây %{value}"
@@ -936,19 +925,11 @@ vi:
   label_revision_id: "Bản điều chỉnh %{value}"
   label_api_access_key: Khoá truy cập API
   label_api_access_key_created_on: "Khoá truy cập API đựơc tạo cách đây %{value}. Khóa này được dùng cho eDesignLab Client."
-<<<<<<< HEAD
-  label_feeds_access_key: Khoá truy cập RSS
-  notice_api_access_key_reseted: Khoá truy cập API của bạn đã được đặt lại.
-  setting_rest_api_enabled: Cho phép dịch vụ web REST
-  label_missing_api_access_key: Mất Khoá truy cập API
-  label_missing_feeds_access_key: Mất Khoá truy cập RSS
-=======
   label_feeds_access_key: Khoá truy cập Atom
   notice_api_access_key_reseted: Khoá truy cập API của bạn đã được đặt lại.
   setting_rest_api_enabled: Cho phép dịch vụ web REST
   label_missing_api_access_key: Mất Khoá truy cập API
   label_missing_feeds_access_key: Mất Khoá truy cập Atom
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a
   button_show: Hiện
   text_line_separated: Nhiều giá trị được phép(mỗi dòng một giá trị).
   setting_mail_handler_body_delimiters: "Cắt bớt email sau những dòng :"
@@ -1158,10 +1139,6 @@ vi:
   setting_jsonp_enabled: Cho phép trợ giúp JSONP
   field_inherit_members: Các thành viên kế thừa
   field_closed_on: Đã đóng
-<<<<<<< HEAD
-  setting_default_projects_tracker_ids: Default trackers for new projects
-  label_total_time: Tổng cộng
-=======
   field_generate_password: Generate password
   setting_default_projects_tracker_ids: Default trackers for new projects
   label_total_time: Tổng cộng
@@ -1188,8 +1165,8 @@ vi:
     users
   label_custom_field_select_type: Select the type of object to which the custom field
     is to be attached
+  label_issue_assigned_to_updated: Assignee updated
   label_check_for_updates: Check for updates
   label_latest_compatible_version: Latest compatible version
   label_unknown_plugin: Unknown plugin
   label_radio_buttons: radio buttons
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a

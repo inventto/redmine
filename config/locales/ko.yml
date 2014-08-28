@@ -1131,14 +1131,6 @@ ko:
   permission_add_documents: 문서 추가
   permission_edit_documents: 문서 편집
   permission_delete_documents: 문서 삭제
-<<<<<<< HEAD
-  label_gantt_progress_line: Progress line
-  setting_jsonp_enabled: JSONP 허용
-  field_inherit_members: 상위 프로젝트로부터 구성원을 상속
-  field_closed_on: 완료일
-  setting_default_projects_tracker_ids: 새 프로젝트에 기본적으로 추가할 일감 유형
-  label_total_time: 합계
-=======
   label_gantt_progress_line: 진행 선
   setting_jsonp_enabled: JSONP 허용
   field_inherit_members: 상위 프로젝트로부터 구성원을 상속
@@ -1164,8 +1156,8 @@ ko:
   setting_force_default_language_for_anonymous: 익명 사용자의 기본 언어 강제
   setting_force_default_language_for_loggedin: 로그인 사용자의 기본 언어 강제
   label_custom_field_select_type: 사용자 정의 필드에 추가할 대상을 선택해주세요.
+  label_issue_assigned_to_updated: Assignee updated
   label_check_for_updates: Check for updates
   label_latest_compatible_version: Latest compatible version
   label_unknown_plugin: Unknown plugin
   label_radio_buttons: radio buttons
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a

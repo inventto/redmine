@@ -1088,10 +1088,6 @@ en-GB:
   setting_jsonp_enabled: Enable JSONP support
   field_inherit_members: Inherit members
   field_closed_on: Closed
-<<<<<<< HEAD
-  setting_default_projects_tracker_ids: Default trackers for new projects
-  label_total_time: Total
-=======
   field_generate_password: Generate password
   setting_default_projects_tracker_ids: Default trackers for new projects
   label_total_time: Total
@@ -1118,8 +1114,8 @@ en-GB:
     users
   label_custom_field_select_type: Select the type of object to which the custom field
     is to be attached
+  label_issue_assigned_to_updated: Assignee updated
   label_check_for_updates: Check for updates
   label_latest_compatible_version: Latest compatible version
   label_unknown_plugin: Unknown plugin
   label_radio_buttons: radio buttons
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a

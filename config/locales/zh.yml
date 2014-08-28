@@ -1060,8 +1060,6 @@ zh:
   label_attribute_of_assigned_to: 分配给 %{name}
   label_attribute_of_fixed_version: 目标版本 %{name}
   label_copy_subtasks: 复制子任务
-<<<<<<< HEAD
-=======
   label_copied_to: 复制到
   label_copied_from: 复制于
   label_any_issues_in_project: 项目内任意问题
@@ -1091,11 +1089,6 @@ zh:
   setting_jsonp_enabled: 启用JSONP支持
   field_inherit_members: 继承父项目成员
   field_closed_on: 结束日期
-<<<<<<< HEAD
-  setting_default_projects_tracker_ids: 新建项目默认跟踪标签
-  label_total_time: 合计
->>>>>>> 292cf401008af7502204dc8cdd1e1da19a5f9510
-=======
   field_generate_password: 生成密码
   setting_default_projects_tracker_ids: 新建项目默认跟踪标签
   label_total_time: 合计
@@ -1120,8 +1113,8 @@ zh:
     users
   label_custom_field_select_type: Select the type of object to which the custom field
     is to be attached
+  label_issue_assigned_to_updated: Assignee updated
   label_check_for_updates: Check for updates
   label_latest_compatible_version: Latest compatible version
   label_unknown_plugin: Unknown plugin
   label_radio_buttons: radio buttons
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a

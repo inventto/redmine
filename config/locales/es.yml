@@ -1123,10 +1123,6 @@ es:
   setting_jsonp_enabled: Habilitar soporte de JSONP
   field_inherit_members: Heredar miembros
   field_closed_on: Cerrada
-<<<<<<< HEAD
-  setting_default_projects_tracker_ids: Tipos de petición habilitados por defecto
-  label_total_time: Total
-=======
   field_generate_password: Generar contraseña
   setting_default_projects_tracker_ids: Tipos de petición habilitados por defecto
   label_total_time: Total
@@ -1149,8 +1145,8 @@ es:
   setting_force_default_language_for_anonymous: Forzar lenguaje por defecto a usuarios anónimos
   setting_force_default_language_for_loggedin: Forzar lenguaje por defecto para usuarios identificados
   label_custom_field_select_type: Seleccione el tipo de objeto al que unir el campo personalizado
+  label_issue_assigned_to_updated: Assignee updated
   label_check_for_updates: Check for updates
   label_latest_compatible_version: Latest compatible version
   label_unknown_plugin: Unknown plugin
   label_radio_buttons: radio buttons
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a

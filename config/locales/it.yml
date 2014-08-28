@@ -1054,13 +1054,8 @@ it:
   label_attribute_of_assigned_to: Assegnatari %{name}
   label_attribute_of_fixed_version: Target version's %{name}
   label_copy_subtasks: Copia sottoattività
-<<<<<<< HEAD
-  label_copied_to: copia a
-  label_copied_from: copia da
-=======
   label_copied_to: copia
   label_copied_from: copiata da
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a
   label_any_issues_in_project: ogni segnalazione del progetto
   label_any_issues_not_in_project: ogni segnalazione non nel progetto
   field_private_notes: Note private
@@ -1088,10 +1083,6 @@ it:
   setting_jsonp_enabled: Abilita supporto a JSONP
   field_inherit_members: Eredita membri
   field_closed_on: Chiuso
-<<<<<<< HEAD
-  setting_default_projects_tracker_ids: Trackers di default per nuovi progetti
-  label_total_time: Totale
-=======
   field_generate_password: Generate password
   setting_default_projects_tracker_ids: Trackers di default per nuovi progetti
   label_total_time: Totale
@@ -1120,8 +1111,8 @@ it:
     users
   label_custom_field_select_type: Select the type of object to which the custom field
     is to be attached
+  label_issue_assigned_to_updated: Assignee updated
   label_check_for_updates: Check for updates
   label_latest_compatible_version: Latest compatible version
   label_unknown_plugin: Unknown plugin
   label_radio_buttons: radio buttons
->>>>>>> 1d91ed6c35d5c5eb73c7cc225f878cb88b445b7a
