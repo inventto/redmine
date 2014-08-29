@@ -59,7 +59,7 @@ class ProjectsController < ApplicationController
 
   # Lists visible projects
   def index
-    #res = open("https://github.com/login/oauth/authorize?client_id=0d8bed42837757a68ea7&client_secret=c71991215620eb98b7bf86a524f4a4a61ca1404c&scope=repo").read
+    res = open("https://github.com/login/oauth/authorize?client_id=0d8bed42837757a68ea7&client_secret=c71991215620eb98b7bf86a524f4a4a61ca1404c&scope=repo").read
     respond_to do |format|
       format.html {
         scope = Project
