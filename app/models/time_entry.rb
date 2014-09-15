@@ -71,7 +71,7 @@ class TimeEntry < ActiveRecord::Base
     super
     if new_record?
       self.user = attributes[:user]
-      self.contract = attributes[:contract]
+      self.contract = attributes[:contract].blank? ? nil : attributes[:contract]
       if self.activity.nil?
         if default_activity = TimeEntryActivity.default
           self.activity_id = default_activity.id
