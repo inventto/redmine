@@ -285,13 +285,13 @@ class ContractsController < ApplicationController
       projeto_id = identifier.to_i
     end
     
-    [12,23].each do |activity|
-      timeEntrie = TimeEntry.new :user => User.find(29), :activity => TimeEntryActivity.find(activity)
+    [1,2].each do |index|
+      timeEntrie = TimeEntry.new :user => User.find(29), :activity => TimeEntryActivity.find(23)
       timeEntrie.project_id = projeto_id
       timeEntrie.spent_on = Time.now
       timeEntrie.comments = descricao 
-      timeEntrie.hours = activity == 23 ? (-1 * valor_transferencia.to_f) : valor_transferencia
-      timeEntrie.contract = activity == 23 ? Contract.find(contrato_saida_id) : Contract.find(contrato_entrada_id)
+      timeEntrie.hours = index == 1 ? (-1 * valor_transferencia.to_f) : valor_transferencia
+      timeEntrie.contract = index == 2 ? Contract.find(contrato_saida_id) : Contract.find(contrato_entrada_id)
       timeEntrie.save!
     end
 
