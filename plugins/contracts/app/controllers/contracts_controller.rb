@@ -279,11 +279,11 @@ class ContractsController < ApplicationController
     contrato_entrada_id = params[:contrato_entrada]
     contrato_saida_id = params[:contrato_saida]
     descricao = params[:descricao_transferencia]
-    if identifier.to_i == 0 {
+    if identifier.to_i == 0
       projeto_id = Project.where("identifier ILIKE '#{identifier}'").first.id
-    } elsif {
+    elsif 
       projeto_id = identifier.to_i
-    }
+    end
     
     [12,23].each do |activity|
       timeEntrie = TimeEntry.new :user => User.find(29), :activity => TimeEntryActivity.find(activity)
