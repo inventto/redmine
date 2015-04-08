@@ -21,8 +21,20 @@
                 </div>
 
                 <div class="pagamento_estagiario">
-                    <%= link_to "Pagamentos Estagiários", trainees_payments_index_path() %>
+                  <%= link_to "Pagamentos Estagiários", trainees_payments_index_path() %>
                 </div>
+            </td>
+            <td>
+              <h3>Trasferência entre contratos</h3>
+              <% %>
+              <%= form_tag("/projects/#{params[:project_id]}/contracts/transfer_between_contracts") do -%>
+                <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+                <label>Valor:</label> <input type="text" id="valor_transferencia" name="valor_transferencia"/><br />
+                <label>Contrato saída:</label> <%= select_tag "contrato_saida", options_from_collection_for_select(@contracts, :id, :title) %> <br />
+                <label>Contrato entrada:</label> <%= select_tag "contrato_entrada", options_from_collection_for_select(@contracts, :id, :title) %><br />
+                <label>Descrição:</label> <input type="text" id="descricao_transferencia" name="descricao_transferencia"/><br />
+                <input name="btn-transferencia" type="submit" value="Transferir"/>
+              <% end %>
             </td>
         <%end%>
     <%end%>

@@ -273,6 +273,30 @@ class ContractsController < ApplicationController
       end
   end
 
+  def transferencia_entre_contratos
+    projeto_id = params[:project_id]
+    valor_transferencia = params[:valor_transferencia]
+    contrato_entrada_id = params[:contrato_entrada]
+    contrato_saida_id = params[:contrato_saida]
+    descricao = params[:descricao_transferencia]
+    logger.info ">"*40
+    logger.info contrato_saida.inspect
+    logger.info contrato_entrada.inspect 
+    
+    [12,23].each do |activity|
+      timeEntrie = TimeEntry.new :user => User.find(29), :activity => TimeEntryActivity.find(activity)
+      timeEntrie.project_id = projeto_id
+      timeEntrie.spent_on = Time.now
+      timeEntrie.comments = descricao 
+      timeEntrie.hours = activity == 23 ? (-1 * valor_transferencia.to_f) : valor_transferencia
+      timeEntrie.contract = activity == 23 ? Contract.find(contrato_saida_id) : Contract.find(contrato_entrada_id)
+      logger.info timeEntrie.contract
+      timeEntrie.save!
+    end
+
+   redirect_to "/projects/#{projeto_id}/contracts"
+  end
+
   private
 
   def find_project

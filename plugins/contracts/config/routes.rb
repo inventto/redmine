@@ -4,6 +4,7 @@
 match "trainees_payments/index" => "trainees_payments#index", :via => :get
 match "projects/:project_id/contracts(/:contract_id)/payment_administrative" => "contracts#gerar_pagamentos_administrativo"
 match "projects/:project_id/contracts(/:contract_id)/payment_intern" => "contracts#gerar_pagamentos"
+match "projects/:project_id/contracts/transfer_between_contracts" => "contracts#transferencia_entre_contratos"
 get "provisionamentos/index"
 match 'provisionamentos/gerar' => 'provisionamentos#importar', :via => :post
 match 'projects/:project_id/contracts/:contract_id/payment' => 'contracts#contabilizar_pagamentos', :via => :post
