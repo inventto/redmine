@@ -274,11 +274,12 @@ class ContractsController < ApplicationController
   end
 
   def transferencia_entre_contratos
-    projeto_id = params[:project_id]
+    identifier = params[:project_id]
     valor_transferencia = params[:valor_transferencia]
     contrato_entrada_id = params[:contrato_entrada]
     contrato_saida_id = params[:contrato_saida]
     descricao = params[:descricao_transferencia]
+    projeto_id = Project.where("identifier ILIKE '#{identifier}'").first.id
     
     [12,23].each do |activity|
       timeEntrie = TimeEntry.new :user => User.find(29), :activity => TimeEntryActivity.find(activity)
@@ -287,7 +288,6 @@ class ContractsController < ApplicationController
       timeEntrie.comments = descricao 
       timeEntrie.hours = activity == 23 ? (-1 * valor_transferencia.to_f) : valor_transferencia
       timeEntrie.contract = activity == 23 ? Contract.find(contrato_saida_id) : Contract.find(contrato_entrada_id)
-      logger.info timeEntrie.contract
       timeEntrie.save!
     end
 
