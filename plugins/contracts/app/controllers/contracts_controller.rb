@@ -279,9 +279,6 @@ class ContractsController < ApplicationController
     contrato_entrada_id = params[:contrato_entrada]
     contrato_saida_id = params[:contrato_saida]
     descricao = params[:descricao_transferencia]
-    logger.info ">"*40
-    logger.info contrato_saida.inspect
-    logger.info contrato_entrada.inspect 
     
     [12,23].each do |activity|
       timeEntrie = TimeEntry.new :user => User.find(29), :activity => TimeEntryActivity.find(activity)
