@@ -5,7 +5,6 @@
   <%= content_tag :thead do%>
     <%= content_tag :tr do%>
       <%= content_tag :th, 'Data' %>
-      <%= content_tag :th, 'Membro' %>
       <%= content_tag :th, 'Projeto' %>
       <%= content_tag :th, 'Comentário' %>
       <%= content_tag :th, 'Total' %>
@@ -15,9 +14,8 @@
     <% @users.each do |k,v|%>
       <%= content_tag :tr, :class => cycle("odd", "even") do%>
         <%= content_tag :td, Time.now.strftime('%d/%m/%Y')%>
-        <%= content_tag :td, User.find(5) %>
         <%= content_tag :td, Project.find(11) %>
-        <%= content_tag :td, TimeEntry.where(:comments => "Pagamento #{User.find(k).name} #{@mes-1}/#{@ano}").first.comments rescue "" %>
+        <%= content_tag :td, "Pagamento #{User.find(k).name} #{@mes-1}/#{@ano}" rescue "" %>
         <%= content_tag :td, (@horas[k] || 0) * v[:hora] - v[:ciee] %>
       <% end %>
     <% end %>
