@@ -222,9 +222,9 @@ class ContractsController < ApplicationController
 
       users = {
           4=>{:hora=>6.0, :ciee=>550}, #Lucão
-          22=>{:hora=>8.0, :ciee=>550}, #Tafarel
+          22=>{:hora=>8.0, :ciee=>0}, #Tafarel
           27=>{:hora=>7.5, :ciee=>0},   #Mitrut
-          32=>{:hora=>7.5, :ciee=>550}  #Rafagnin
+          32=>{:hora=>7.5, :ciee=>0}  #Rafagnin
       }
 
       horas = {}
@@ -236,7 +236,7 @@ class ContractsController < ApplicationController
           t.project_id = 11
           t.spent_on = Time.mktime(ano, mes, 5)
           t.comments = "Pagamento #{User.find(k).name} #{mes-1}/#{ano}"
-          t.hours = horas[k] * v[:hora] - v[:ciee]
+          t.hours = (horas[k] || 0) * v[:hora] - v[:ciee]
           t.save!
       end
 
