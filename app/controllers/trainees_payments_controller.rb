@@ -4,7 +4,7 @@ class TraineesPaymentsController < ApplicationController
     @mes ||= Time.now.month
 
     @users = {
-      4=>{:hora=>14.0, :ciee=>550}, #Lucão
+      4=>{:hora=>14.0, :ciee=>0}, #Lucão
       22=>{:hora=>18.5, :ciee=>0}, #Tafarel
       27=>{:hora=>18.0, :ciee=>0},   #Mitrut
       32=>{:hora=>18.5, :ciee=>0}  #Rafagnin
