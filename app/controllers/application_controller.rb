@@ -659,7 +659,7 @@ class ApplicationController < ActionController::Base
       logger.warn "Importing Closed #{closed_issues.size}"
       closed_issues.reverse.each do |closed_issue|
         issue_number = IssueNumber.joins(:issue).where("number = #{closed_issue["number"]} and project_id = #{project_id} and repository_id=#{@repository.id}")
-        logger.info "ISSUE NUMBER COLOCANDO NUMBER #{issue_number}"
+        logger.info "ISSUE NUMBER COLOCANDO NUMBER #{issue_number.inspect}"
         if issue_number.empty?
           begin
             logger.info "USER #{closed_issue["user"]["login"].downcase}"
