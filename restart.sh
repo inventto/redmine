@@ -6,4 +6,5 @@ kill $(fuser 3833/tcp | tail -n 1 | xargs)
 echo
 echo "Reiniciando automaticamente"
 echo
+sh /var/www/apps/redmine/start.sh
 sleep 5

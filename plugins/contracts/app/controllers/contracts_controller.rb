@@ -5,6 +5,15 @@ class ContractsController < ApplicationController
   def index
     @project = Project.find(params[:project_id])
     @contracts = Contract.order("start_date ASC").where(:project_id => sub_projects_ids(@project))
+    if params["after"]
+      @contracts.each do |c|
+        c.ignore_future Date.parse(params["after"])
+      end
+    else
+      @contracts.each do |c|
+        c.ignore_future Time.now.to_date
+      end
+    end
     if not @project.name.include?('$')
       @contracts.delete_if{|c| c.project.name.include?('$')}
     end

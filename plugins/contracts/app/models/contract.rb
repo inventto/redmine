@@ -9,12 +9,22 @@ class Contract < ActiveRecord::Base
   validates :end_date, :is_after_start_date => true
   before_destroy { |contract| contract.time_entries.clear }
 
+  def ignore_future date=Tame.now.to_date
+    @ignore_future = date
+  end
+
   def hours_purchased
     self.purchase_amount / self.hourly_rate
   end
   
   def hours_spent
-    self.time_entries.sum { |time_entry| time_entry.hours }
+    self.time_entries.sum do |time_entry|
+      if not @ignore_future or time_entry.spent_on <= @ignore_future
+        time_entry.hours
+      else
+        0
+      end
+    end
   end
 
   def amount_spent
@@ -22,10 +32,14 @@ class Contract < ActiveRecord::Base
       amount = time_entry.cost
       if amount == 0
         amount = time_entry.hours * (Rate.amount_for(time_entry.user, project, time_entry.spent_on.strftime("%Y-%m-%d")) || self.hourly_rate)
-	time_entry.cost = amount
+        time_entry.cost = amount
         time_entry.save!
       end
-      amount
+      if not @ignore_future or time_entry.spent_on <= @ignore_future
+        amount
+      else
+        0
+      end
     end
   end
   
